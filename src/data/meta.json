@@ -4,9 +4,9 @@
  "lawSource": "全國法規資料庫（經官方網站逐條比對）",
  "verifiedAt": "2026-11-07",
  "counts": {
-  "groups": 80,
-  "items": 278,
+  "groups": 101,
+  "items": 317,
   "self": 58,
-  "official": 22
+  "official": 43
  }
 }
