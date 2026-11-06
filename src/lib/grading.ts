@@ -165,8 +165,14 @@ export function describeAnswer(item: Item): string {
         })
         .join('\n');
     case 'calc':
-      return `${item.answer} ${item.unit}`;
+      return `${item.answer}${displayUnit(item.unit) ? ' ' + displayUnit(item.unit) : ''}`;
     case 'essay':
       return item.modelAnswer.join('\n');
   }
+}
+
+/** 「（無單位）」之類的占位字不顯示 */
+export function displayUnit(u?: string) {
+  if (!u || /無單位/.test(u)) return '';
+  return u;
 }

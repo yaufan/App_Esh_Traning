@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { NumericKeypadSheet } from '@/components/ui/keypad';
 import { AppText, useHaptic } from '@/components/ui/primitives';
 import { Sheet } from '@/components/ui/sheet';
+import { displayUnit } from '@/lib/grading';
 import type { CalcItem, FillItem, MatchingItem } from '@/lib/types';
 import { fonts, radius, space, type, useTheme } from '@/theme';
 import { Hint, OptionCard, Slot, type MarkState, type QProps } from './shared';
@@ -185,21 +186,21 @@ export function CalcQ({ item, answer, onChange, review, result }: QProps<CalcIte
             {v || '點此輸入'}
           </AppText>
           <AppText variant="bodyStrong" color={colors.inkSoft}>
-            {item.unit}
+            {displayUnit(item.unit)}
           </AppText>
         </View>
       </Pressable>
       {item.decimals != null && <Hint icon="calculator-outline">{`四捨五入至小數點後第 ${item.decimals} 位`}</Hint>}
       {review && !result?.correct && (
         <AppText variant="smallStrong" color={colors.success}>
-          正解 {item.answer} {item.unit}
+          正解 {item.answer} {displayUnit(item.unit)}
         </AppText>
       )}
       <NumericKeypadSheet
         visible={open}
         initial={v}
         label="輸入計算結果"
-        unit={item.unit}
+        unit={displayUnit(item.unit)}
         onClose={() => setOpen(false)}
         onDone={(val) => {
           onChange({ type: 'calc', value: val });
