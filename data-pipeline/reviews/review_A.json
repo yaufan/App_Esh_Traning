@@ -1,0 +1,175 @@
+[
+ {
+  "itemId": "S-A-01-1",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-01-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-01-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-01-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-02-1",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-02-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-02-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-02-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-03-1",
+  "verdict": "fix",
+  "issue": "答案 A、B、D、F 正確。但解析「C 固定式起重機屬施行細則第 22 條「具有危險性之機械」；E 鍋爐屬施行細則第 23 條「具有危險性之設備」，兩者依第 16 條實施檢查」漏掉條文的限定條件。第 22 條、第 23 條原文是「指符合中央主管機關所定一定容量以上之下列機械／設備」，解析寫成所有固定式起重機、鍋爐都屬危險性機械設備，說得太過（所引 quote 本身就有此限定）。",
+  "fix": "explanation 該句改為：「C 固定式起重機、E 鍋爐於符合中央主管機關所定一定容量以上時，分屬施行細則第 22 條「具有危險性之機械」及第 23 條「具有危險性之設備」，依第 16 條實施檢查，均不在第 12 條之列。」",
+  "resolution": "已依審題意見修正（2026-11-07），validate.py 通過"
+ },
+ {
+  "itemId": "S-A-03-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-03-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-03-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-04-1",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-04-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-04-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-04-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-05-1",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-05-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-05-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-05-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-06-1",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-06-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-06-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-06-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-07-1",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-07-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-07-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-07-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-08-1",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-08-2",
+  "verdict": "fix",
+  "issue": "正確選項 A 寫「雇主應自明知或可得而知災害事實起八小時內」，把八小時起算點的知悉主體寫成「雇主」。施行細則第 47 條第 1 項原文是「指事業單位明知或可得而知已發生規定之職業災害事實起八小時內」，起算點以「事業單位」知悉為準。雇主依職安法第 2 條第 3 款指事業主或事業之經營負責人，範圍和事業單位不同，現在的寫法容易讓人以為從雇主本人知悉才開始算，和條文不一致。解析已正確寫「事業單位明知或可得而知」，只有選項文字要改。",
+  "fix": "options A 的 text 改為：「屬罹災人數在一人以上且需住院治療之災害，雇主應於事業單位明知或可得而知已發生規定之職業災害事實起八小時內，向事業單位所在轄區之勞動檢查機構通報」。explanation 不用改。",
+  "resolution": "已依審題意見修正（2026-11-07），validate.py 通過"
+ },
+ {
+  "itemId": "S-A-08-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-08-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-08-5",
+  "verdict": "fix",
+  "issue": "配合答案 1-C、2-D、3-B、4-A 正確。問題在題幹把條文改寫成「主管機關得依職業災害勞工之需求，提供適切之重建服務」。第 64 條第 1 項原文是「主管機關應規劃整合相關資源，並得運用保險人核定本保險相關資料，依職業災害勞工之需求，提供下列適切之重建服務事項」，「應」「得」並存，句構本身可有不同讀法；題幹省略「應規劃整合相關資源」後直接寫成「得…提供」，等於替條文選了一種義務性質（應／得），沒有依據。另外「受傷勞工經治療後」不是條文要件（醫療復健本身就是「診治及療養」），容易誤導成重建服務都在治療之後。",
+  "fix": "stem 改為：「依勞工職業災害保險及保護法第 64 條第 1 項，主管機關應規劃整合相關資源，並得運用保險人核定本保險相關資料，依職業災害勞工之需求，提供適切之重建服務事項。請將下列服務內容配合正確的重建服務名稱。」並在 citations 增加一筆：{\"pcode\":\"N0050031\",\"article\":\"64\",\"quote\":\"主管機關應規劃整合相關資源，並得運用保險人核定本保險相關資料，依職業災害勞工之需求，提供下列適切之重建服務事項\"}",
+  "resolution": "已依審題意見修正（2026-11-07），validate.py 通過"
+ },
+ {
+  "itemId": "S-A-09-1",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-09-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-09-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-09-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-10-1",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-10-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-10-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-A-10-4",
+  "verdict": "pass"
+ }
+]

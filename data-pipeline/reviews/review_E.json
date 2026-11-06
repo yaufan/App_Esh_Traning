@@ -1,0 +1,185 @@
+[
+ {
+  "itemId": "S-E-01-1",
+  "verdict": "fix",
+  "issue": "計算正確：Python 重算 391.5 ÷ 8 ＝ 48.9375 → 48.9，tolerance 0.05 合理，公式出自第 4 條，午休依題目情境不計入總工作時間。只有解析最後一句「常見錯誤是把四個時段的濃度直接相加除以 4……」的「常見錯誤」是考試經驗說法，條文推不出來（與 review_B 對「常見陷阱」「常考陷阱」的處理一致）。",
+  "fix": "explanation 最後一句「常見錯誤是把四個時段的濃度直接相加除以 4（得 47.75 ppm），這樣沒有依第 4 條以各時段工作時間加權，答案不正確。」改為「若把四個時段的濃度直接相加除以 4（得 47.75 ppm），就沒有依第 4 條以各時段工作時間加權，結果不正確。」",
+  "resolution": "已依審題意見修正（2026-11-07），validate.py 通過"
+ },
+ {
+  "itemId": "S-E-01-2",
+  "verdict": "fix",
+  "issue": "計算正確：50 ppm 屬「10 以上，未滿 100」級距，係數 1.5，50 × 1.5 ＝ 75；tolerance 0.5、整數，合理。所引第 3 條 quote 提到附表二（依第 11 條自 116/1/1 施行），但本題只用附表一未註「高」字之情形，沒有考附表二數值，不受影響。只有解析中「若誤用「未滿 10」級距之係數 2」把級距名稱寫錯：第 3 條表格係數 2 對應的級距是「1 以上，未滿 10」，表中沒有「未滿 10」這個級距；加上引號後看起來像在引用條文，用詞應和表格一致。",
+  "fix": "explanation 中「若誤用「未滿 10」級距之係數 2，會得 100 ppm；」改為「若誤用「1 以上，未滿 10」級距之係數 2，會得 100 ppm；」。",
+  "resolution": "已依審題意見修正（2026-11-07），validate.py 通過"
+ },
+ {
+  "itemId": "S-E-01-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-01-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-02-1",
+  "verdict": "fix",
+  "issue": "六格對應全部正確（0.2→3、1→2、10→1.5、750→1.25、1000→1、粒狀 0.5→3），級距邊界「未滿／以上」的判讀正確。問題在單位：第 3 條表格備註在依據庫及全國法規資料庫文字版都寫成「表中容許濃度氣狀物以 ppm、粒狀物以 mg/m、石綿 f/cc 為單位」，上標 ³ 沒有顯示。解析寫「粒狀物以 mg/m³ 為單位」是正確讀法，但所引 quote「以 ppm、粒狀物以」沒有包含單位，條文字面又是 mg/m，所以 mg/m³ 這個單位要靠第 6 條（本標準所稱 ㎎／m^3 為每立方公尺毫克數）才有依據，目前 citations 沒有引用第 6 條。",
+  "fix": "citations 加一筆：{\"pcode\":\"N0060004\",\"article\":\"6\",\"quote\":\"本標準所稱 ㎎／m^3 為每立方公尺毫克數\"}（已確認逐字比對可通過）。explanation 中「表中容許濃度氣狀物以 ppm、粒狀物以 mg/m³ 為單位。」改為「表中容許濃度氣狀物以 ppm、粒狀物以 mg/m³（即第 6 條所稱 ㎎／m^3，每立方公尺毫克數）為單位。」",
+  "resolution": "已依審題意見修正（2026-11-07），validate.py 通過"
+ },
+ {
+  "itemId": "S-E-02-2",
+  "verdict": "fix",
+  "issue": "計算正確：0.05 屬「未滿 1」級距，係數 3，0.05 × 3 ＝ 0.15；tolerance 0.005 對應小數 2 位，合理。解析最後一句「容許濃度愈低，變量係數反而愈大，這是常考的觀念」中「這是常考的觀念」是考試頻率的說法，條文推不出來。另外，粒狀物以 mg/m³ 比對級距的依據和 S-E-02-1 一樣，需要第 6 條支撐。",
+  "fix": "explanation 最後一句「容許濃度愈低，變量係數反而愈大，這是常考的觀念。」改為「由第 3 條變量係數表可知，容許濃度所屬級距愈低，變量係數愈大。」建議 citations 同時加上 {\"pcode\":\"N0060004\",\"article\":\"6\",\"quote\":\"本標準所稱 ㎎／m^3 為每立方公尺毫克數\"}。",
+  "resolution": "已依審題意見修正（2026-11-07），validate.py 通過"
+ },
+ {
+  "itemId": "S-E-02-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-02-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-03-1",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-03-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-03-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-03-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-04-1",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-04-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-04-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-04-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-05-1",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-05-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-05-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-05-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-06-1",
+  "verdict": "fix",
+  "issue": "六列的分類與係數已依附表一（施行日 115/7/1，已施行）及附表四逐一核對，全部正確：四氯化碳 第一種第 3 目／0.3，二氯甲烷 第二種第 30 目／0.04，松節油 第三種第 6 目／0.01，三氯乙烯 第一種第 7 目／0.3，四氯乙烯 第二種第 24 目／0.04，石油醚 第三種第 3 目／0.01。只有解析最後一句的「易混淆處」是在描述學習者容易搞混，條文推不出來（同屬考試經驗的說法）。",
+  "fix": "explanation 最後一句「易混淆處：三氯乙烯是第一種，四氯乙烯是第二種；三氯甲烷是第一種，二氯甲烷是第二種。」改為「請區分：三氯乙烯是第一種，四氯乙烯是第二種；三氯甲烷是第一種，二氯甲烷是第二種。」",
+  "resolution": "已依審題意見修正（2026-11-07），validate.py 通過"
+ },
+ {
+  "itemId": "S-E-06-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-06-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-06-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-07-1",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-07-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-07-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-07-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-07-5",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-08-1",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-08-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-08-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-08-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-09-1",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-09-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-09-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-09-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-10-1",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-10-2",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-10-3",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-10-4",
+  "verdict": "pass"
+ },
+ {
+  "itemId": "S-E-10-5",
+  "verdict": "pass"
+ }
+]
