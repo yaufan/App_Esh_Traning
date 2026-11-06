@@ -123,7 +123,7 @@ export function QuestionCard({
           </AppText>
         </View>
         <Tag label={typeLabel[item.type]} />
-        {item.type !== 'essay' && <Tag label={`${item.points} 分`} icon="star-outline" />}
+        {item.points > 0 && <Tag label={`${item.points} 分`} icon="star-outline" />}
         <View style={{ flex: 1 }} />
         {review && item.type !== 'essay' && result && (
           <Tag

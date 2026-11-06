@@ -15,6 +15,16 @@ import { useAppStore } from '@/lib/store';
 import type { Group, Item } from '@/lib/types';
 import { categoryMeta, MAX_WIDTH, radius, space, useTheme } from '@/theme';
 
+/** 官方舊題：取出第一個小題「(一)」之前的題目說明；沒有小題時整題就是子題題幹，不另顯示 */
+function officialLead(g: Group): string | null {
+  const t = g.originalText?.trim();
+  if (!t) return null;
+  const m = t.search(/[(（]一[)）]/);
+  if (m <= 0) return null;
+  const lead = t.slice(0, m).trim();
+  return lead.length >= 4 ? lead : null;
+}
+
 function useNow(active: boolean) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
@@ -178,6 +188,17 @@ export default function SessionScreen() {
                   {group.topic}
                 </AppText>
               </View>
+
+              {group.source === 'official-old' && !group.context && officialLead(group) && (
+                <Card style={{ gap: space.sm, borderLeftWidth: 4, borderLeftColor: colors.accent }}>
+                  <AppText variant="caption" color={colors.inkSoft}>
+                    題目
+                  </AppText>
+                  <AppText variant="body" style={{ fontWeight: '600' }}>
+                    {officialLead(group)}
+                  </AppText>
+                </Card>
+              )}
 
               {group.source === 'official-old' && group.originalText && (
                 <Card tone="alt" style={{ gap: space.sm }}>
