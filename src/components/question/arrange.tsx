@@ -176,7 +176,7 @@ function LinkingMatrix({ item, answer, onChange, review, result }: QProps<Linkin
                         onPress={() => pick(l.id, ci, o.id)}
                         style={({ pressed }) => [styles.chip, { borderColor: border, backgroundColor: bg, opacity: pressed ? 0.8 : 1 }]}>
                         {picked && !review && <Ionicons name="link" size={14} color={tint} />}
-                        <AppText variant="small" style={{ fontWeight: picked || (review && isAns) ? '700' : '400' }}>
+                        <AppText variant="small" style={{ flexShrink: 1, fontWeight: picked || (review && isAns) ? '700' : '400' }}>
                           {o.text}
                         </AppText>
                       </Pressable>
@@ -416,5 +416,14 @@ const styles = StyleSheet.create({
   dot: { width: 8, height: 8, borderRadius: 4 },
   matrixRow: { borderWidth: 1.5, borderRadius: radius.md, padding: space.md, gap: space.md },
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
-  chip: { flexDirection: 'row', alignItems: 'center', gap: 4, borderWidth: 1.5, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 7 },
+  chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    borderWidth: 1.5,
+    borderRadius: radius.lg,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    maxWidth: '100%',
+  },
 });
