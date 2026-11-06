@@ -92,7 +92,8 @@ def check_group(g, errs, seen):
         if k not in g: errs.append(f"{gid}: missing {k}")
     if g.get('category') not in (1, 2, 3): errs.append(f"{gid}: category must be 1/2/3")
     items = g.get('items') or []
-    if len(items) < 2: errs.append(f"{gid}: needs >=2 items")
+    min_items = 1 if g.get('source') == 'official-old' else 2
+    if len(items) < min_items: errs.append(f"{gid}: needs >={min_items} items")
     tot = sum(float(i.get('points', 0)) for i in items)
     if g.get('partial'):
         if not (0 < tot <= 10 + 1e-6): errs.append(f"{gid}: partial group points {tot} must be in (0,10]")
