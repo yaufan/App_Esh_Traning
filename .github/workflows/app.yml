@@ -1,0 +1,48 @@
+name: App
+
+# Quick checks on main: version numbers agree, types, lint, and the question
+# bank still matches the law corpus (every quote verbatim, nothing cites an
+# article that is not yet in force). No APK is built here; release.yml does
+# that. Pushing the working branch starts nothing (CLAUDE.md: main is pushed
+# once the owner has agreed).
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'data-pipeline/**'
+      - 'plugins/**'
+      - 'scripts/**'
+      - 'app.json'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/app.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: app-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      # Version, TypeScript, ESLint and the question-bank validator.
+      - run: npm run check
+
+      # The web build catches bundling errors (missing imports, bad JSON)
+      # without the Android toolchain.
+      - run: npx expo export -p web

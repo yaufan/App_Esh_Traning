@@ -9,6 +9,14 @@
 - **錯題本與收藏**、成績紀錄、各題型答對率。
 - **法規全文**：題目引用的條文可直接展開全文，並連結全國法規資料庫。
 
+## 下載（Android）
+
+用 Android 手機掃描下面的 QR code，會開到最新版的下載頁，點 `esh-training-版本-arm64.apk` 下載安裝（很舊的手機改下載 `armv7`）。第一次安裝時，手機會問是否允許「安裝不明來源的應用程式」，允許瀏覽器安裝即可。
+
+<img src="docs/download-qr.png" width="240" alt="下載最新版">
+
+iPhone 不能安裝 APK；要上 iPhone 需要 Apple 開發者帳號，再用 TestFlight 發布。
+
 ## 題庫內容（2026-11-07 版）
 
 | 區塊 | 題組／題數 | 子題 | 說明 |
@@ -48,15 +56,19 @@ python3 validate.py ../bank/*.json                       # 驗證
 python3 build_app_data.py ../../src/data ../bank/*.json  # 產生 src/data/bank.json、laws.json、meta.json
 ```
 
-### 打包上架（EAS）
+### 發布新版本（GitHub Actions 自動打包 APK）
 
-```bash
-npx eas-cli@latest login
-npx eas-cli@latest build -p android --profile preview   # 產生可安裝的 APK
-npx eas-cli@latest build -p ios                          # 需要 Apple Developer 帳號
-```
+和 yaufan 其他 APP 同一套流程：
 
-`app.json` 中的 `ios.bundleIdentifier` 與 `android.package` 目前是 `tw.esh.training`，上架前請改成自己的識別碼。
+1. 版本號三處一致：`app.json` 的 `expo.version`、`package.json` 的 `version`、`CHANGELOG.md` 最上面一段 `## X.Y.Z 測試版（日期）`（`npm run check:version` 會檢查）。
+2. 推到 `main`：
+   - **App** 工作流程（`.github/workflows/app.yml`）跑版本、型別、lint、題庫驗證與網頁打包，約 3～5 分鐘。
+   - **Release** 工作流程（`.github/workflows/release.yml`）在版本還沒發布過時，用 Expo prebuild＋Gradle 打包 arm64／armv7／x86_64 三個 APK，以測試金鑰簽章、檢查簽章指紋與權限，放上 GitHub Releases，約 25～40 分鐘。
+3. 本專案是公開的，GitHub Actions 不扣每月額度。
+4. 簽章用和其他 APP 同一把測試金鑰：在 GitHub 專案頁 Settings → Secrets and variables → Actions → **Repository secrets** 加 `ANDROID_KEYSTORE_BASE64`、`ANDROID_KEYSTORE_PASSWORD`。金鑰與密碼不可放進 git。正式上架 Google Play 前要換成正式的上傳金鑰。
+5. 做某一版的下載 QR code：`python3 tools/make_qr.py "<APK 網址>" qr.png "職安乙級術科練習 X.Y.Z" "Android 手機掃描，直接下載安裝" "github.com/yaufan/App_Esh_Traning|releases/download/vX.Y.Z/<檔名>"`（需要 `pip install segno pillow`）。
+
+APP 識別碼：`com.yaufan.eshtraining`。簽章、分機型打包、正式版移除網路與檔案權限，都寫在 `plugins/withAndroidRelease.js`（Expo config plugin），不要手動改 `android/`（它是 prebuild 產生的，不放進 git）。
 
 ## 專案結構
 
@@ -72,6 +84,9 @@ src/
   components/ui/       基本元件、數字鍵盤、計算機
   lib/                 題庫存取、計分、作答紀錄（zustand + AsyncStorage）
   data/                由 data-pipeline 產生的題庫與法規資料
+plugins/               Expo config plugin：Android 簽章、分機型、權限
+scripts/check-version.js 版本號三處一致檢查
+tools/make_qr.py       下載 QR code
 data-pipeline/         法規依據庫、題庫原始檔、驗證與打包腳本、審題紀錄
 ```
 

@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useState } from 'react';
@@ -124,7 +125,7 @@ export default function About() {
       </Card>
 
       <AppText variant="caption" color={colors.inkMute} style={{ textAlign: 'center' }}>
-        題庫版本 {meta.bankVersion}・{meta.counts.groups} 題組・{meta.counts.items} 子題
+        APP {Constants.expoConfig?.version ?? ''}・題庫 {meta.bankVersion}・{meta.counts.groups} 題組・{meta.counts.items} 子題
       </AppText>
 
       <Sheet visible={confirm} onClose={() => setConfirm(false)} title="清除作答紀錄？">

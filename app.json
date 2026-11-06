@@ -9,8 +9,9 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/images/icon.png",
-      "bundleIdentifier": "tw.esh.training",
-      "supportsTablet": true
+      "bundleIdentifier": "com.yaufan.eshtraining",
+      "supportsTablet": true,
+      "buildNumber": "1"
     },
     "android": {
       "adaptiveIcon": {
@@ -20,7 +21,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "tw.esh.training"
+      "package": "com.yaufan.eshtraining",
+      "versionCode": 1
     },
     "web": {
       "output": "single",
@@ -37,7 +39,8 @@
           "imageWidth": 120
         }
       ],
-      "expo-font"
+      "expo-font",
+      "./plugins/withAndroidRelease.js"
     ],
     "experiments": {
       "typedRoutes": true,
