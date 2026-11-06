@@ -1,0 +1,12 @@
+{
+ "bankVersion": "pending-review",
+ "lawsRetrievedAt": "2026-11-07",
+ "lawSource": "全國法規資料庫（經官方網站逐條比對）",
+ "verifiedAt": "2026-11-07",
+ "counts": {
+  "groups": 0,
+  "items": 0,
+  "self": 0,
+  "official": 0
+ }
+}

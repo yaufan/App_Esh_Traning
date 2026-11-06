@@ -1,0 +1,23 @@
+{
+  "pcode": "N0060017",
+  "items": [
+    {
+      "no": "附表一",
+      "title": "附表一 有機溶劑",
+      "fileId": "0000396208",
+      "text": "本規則第三條第一款規定之有機溶劑及其分類如下：\n一、第一種有機溶劑\n1 三氯甲烷 Trichloromethane\n2 1,1,2,2–四氯乙烷 1,1,2,2–Tetrachloroethane\n3 四氯化碳 Tetrachloromethane\n4 1,2–二氯乙烯 1,2–Dichloroethylene\n5 1,2–二氯乙烷 1,2–Dichloroethane\n6 二硫化碳 Carbon disulfide\n7 三氯乙烯 Trichloroethylene\n8 僅由1.至7.列舉之物質之混合物\n二、第二種有機溶劑\n1 丙酮 Acetone\n2 異戊醇 Isoamyl alcohol\n3 異丁醇 Isobutyl alcohol\n4 異丙醇 Isopropyl alcohol\n5 乙醚 Ethyl ether\n6 乙二醇乙醚 Ethylene glycol monoethyl ether\n7 乙二醇乙醚醋酸酯 Ethylene glycol monoethyl ether acetate\n8 乙二醇丁醚 Ethylene glycol monobutyl ether\n9 乙二醇甲醚 Ethylene glycol monomethyl ether\n10 鄰–二氯苯 O–dichlorobenzene\n11 二甲苯（含鄰、間、對異構物） Xylenes\n12 甲酚 Cresol\n13 氯苯 Chlorobenzene\n14 乙酸戊酯 Amyl acetate\n15 乙酸異戊酯 Isoamyl acetate\n16 乙酸異丁酯 Isobutyl acetate\n17 乙酸異丙酯 Isopropyl acetate\n18 乙酸乙酯 Ethyl acetate\n19 乙酸丙酯 Propyl acetate\n20 乙酸丁酯 Butyl acetate\n21 乙酸甲酯 Methyl acetate\n22 苯乙烯 Styrene\n23 1,4–二氧陸圜 1,4–Dioxan\n24 四氯乙烯 Tetrachloroethylene\n25 環己醇 Cyclohexanol\n26 環己酮 Cyclohexanone\n27 1–丁醇 1–Butyl alcohol\n28 2–丁醇 2–Butyl alcohol\n29 甲苯 Toluene\n30 二氯甲烷 Dichloromethane\n31 甲醇 Methyl alcohol\n32 甲基異丁酮 Methyl isobutyl ketone\n33 甲基環己醇 Methyl cyclohexanol\n34 甲基環己酮 Methyl cyclohexanone\n35 甲丁酮 Methyl butyl ketone\n36 1,1,1–三氯乙烷 1,1,1–Trichloroethane\n37 1,1,2–三氯乙烷 1,1,2–Trichloroethane\n38 丁酮 Methyl ethyl ketone\n39 二甲基甲醯胺 N,N-Dimethyl formamide\n40 四氫呋喃 Tetrahydrofuran\n41 正己烷 n-hexane\n42 1–溴丙烷 1–Bromopropane\n43 僅由1.至42.列舉之物質之混合物\n三、第三種有機溶劑\n1 汽油 Gasoline\n2 煤焦油精 Coal tar naphtha\n3 石油醚 Petroleum ether\n4 石油精 Petroleum naphtha\n5 輕油精 Petroleum benzine\n6 松節油 Turpentine\n7 礦油精 Mineral spirit\n8 僅由1.至7.列舉之物質之混合物"
+    },
+    {
+      "no": "附表二",
+      "title": "附表二 有機溶劑或其混存物之容許消費量及其計算方式",
+      "fileId": "0000396209",
+      "text": "本規則第五條第二項規定之有機溶劑或其混存物之容許消費量，依次表之規定計算。\n第一種有機溶劑或其混存物：容許消費量=1/15×作業場所之氣積\n第二種有機溶劑或其混存物：容許消費量=2/5×作業場所之氣積\n第三種有機溶劑或其混存物：容許消費量=3/2×作業場所之氣積\n（1）表中所列作業場所之氣積不含超越地面四公尺以上高度之空間。\n（2）容許消費量以公克為單位，氣積以立方公尺為單位計算。\n（3）氣積超過一百五十立方公尺者，概以一百五十立方公尺計算。"
+    },
+    {
+      "no": "附表四",
+      "title": "附表四 整體換氣裝置之換氣能力及其計算方法",
+      "fileId": "0000396211",
+      "text": "本規則第十五條第二項之換氣能力及其計算方法如下：\n第一種有機溶劑或其混存物：每分鐘換氣量＝一小時作業時間內之有機溶劑或其混存物之消費量×0.3\n第二種有機溶劑或其混存物：每分鐘換氣量＝一小時作業時間內之有機溶劑或其混存物之消費量×0.04\n第三種有機溶劑或其混存物：每分鐘換氣量＝一小時作業時間內之有機溶劑或其混存物之消費量×0.01\n註：表中每分鐘換氣量之單位為立方公尺，一小時作業時間內之有機溶劑或其混存物之消費量之單位為公克。"
+    }
+  ]
+}
