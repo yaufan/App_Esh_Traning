@@ -66,6 +66,7 @@ export default function Home() {
   const ov = useOverview();
   const sessions = useAppStore((s) => s.sessions);
   const history = useAppStore((s) => s.history);
+  const setSetting = useAppStore((s) => s.setSetting);
   const openMock = findOpen('mock');
   const left = openMock ? remainingSec(openMock) : null;
   const recent = history
@@ -157,6 +158,16 @@ export default function Home() {
 
       <SectionTitle title="快速開始" />
       <View style={styles.tileGrid}>
+        <QuickTile
+          icon="eye-outline"
+          title="直接看答案"
+          sub="不用作答，讀答案與解析"
+          tint={colors.success}
+          onPress={() => {
+            setSetting('studyMode', true);
+            router.push('/practice');
+          }}
+        />
         <QuickTile icon="shuffle" title="隨機 5 題組" sub="優先出還沒做過的" tint={colors.info} onPress={() => startRandomPractice(5)} />
         <QuickTile
           icon="document-text-outline"

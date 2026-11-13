@@ -14,6 +14,8 @@ export type QProps<T extends Item = Item> = {
   /** review：已交卷或已看解析，鎖定作答並標示對錯 */
   review: boolean;
   result?: ItemResult;
+  /** 直接看答案：作答區顯示的是正解，不是使用者的作答 */
+  study?: boolean;
 };
 
 export type MarkState = 'idle' | 'selected' | 'correct' | 'wrong' | 'missed';

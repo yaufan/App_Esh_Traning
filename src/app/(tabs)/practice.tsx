@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, EmptyState, ProgressBar, Screen, Tag } from '@/components/ui/primitives';
 import { officialSessions, topicsOf } from '@/lib/bank';
-import { startOfficial, startPractice } from '@/lib/start';
+import { startOfficial, startOfficialStudy, startPractice, startStudy } from '@/lib/start';
 import { useAppStore } from '@/lib/store';
 import type { Group } from '@/lib/types';
 import { categoryMeta, radius, space, useTheme } from '@/theme';
@@ -32,8 +32,47 @@ function Segmented({ value, onChange }: { value: 'self' | 'official'; onChange: 
   );
 }
 
+/** 題庫頁的讀題方式：自己作答，或直接看答案與解析 */
+function ModeSwitch() {
+  const { colors } = useTheme();
+  const study = useAppStore((s) => !!s.settings.studyMode);
+  const setSetting = useAppStore((s) => s.setSetting);
+  const opts: { v: boolean; label: string; icon: 'create-outline' | 'eye-outline' }[] = [
+    { v: false, label: '自己作答', icon: 'create-outline' },
+    { v: true, label: '直接看答案', icon: 'eye-outline' },
+  ];
+  return (
+    <View style={{ gap: 6 }}>
+      <View style={[styles.seg, { backgroundColor: colors.surfaceAlt }]}>
+        {opts.map((o) => {
+          const active = study === o.v;
+          return (
+            <Pressable
+              key={o.label}
+              onPress={() => setSetting('studyMode', o.v)}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: active }}
+              style={[styles.segBtn, styles.modeBtn, active && { backgroundColor: o.v ? colors.successSoft : colors.surface, borderColor: o.v ? colors.success : colors.line }]}>
+              <Ionicons name={o.icon} size={16} color={active ? (o.v ? colors.success : colors.ink) : colors.inkSoft} />
+              <AppText variant="smallStrong" color={active ? (o.v ? colors.success : colors.ink) : colors.inkSoft}>
+                {o.label}
+              </AppText>
+            </Pressable>
+          );
+        })}
+      </View>
+      {study && (
+        <AppText variant="caption" color={colors.inkSoft}>
+          點任何題組都會直接顯示正確答案、解析與法規依據，不用作答，也不列入答對率和錯題本。
+        </AppText>
+      )}
+    </View>
+  );
+}
+
 function GroupRow({ g }: { g: Group }) {
   const { colors } = useTheme();
+  const study = useAppStore((s) => !!s.settings.studyMode);
   const stats = useAppStore((s) => s.itemStats);
   const bookmarked = useAppStore((s) => !!s.bookmarks[g.id]);
   const toggle = useAppStore((s) => s.toggleBookmark);
@@ -42,7 +81,8 @@ function GroupRow({ g }: { g: Group }) {
   const sub = g.topic.split('｜')[1];
   return (
     <Pressable
-      onPress={() => startPractice(g.title, [g.id])}
+      onPress={() => (study ? startStudy : startPractice)(g.title, [g.id])}
+      accessibilityLabel={`${g.title}・${study ? '直接看答案' : '開始練習'}`}
       style={({ pressed }) => [styles.groupRow, { borderTopColor: colors.line, opacity: pressed ? 0.75 : 1 }]}>
       <View style={{ flex: 1, gap: 3 }}>
         <AppText variant="bodyStrong">{g.title}</AppText>
@@ -65,7 +105,7 @@ function GroupRow({ g }: { g: Group }) {
       <Pressable hitSlop={10} onPress={() => toggle(g.id)} accessibilityLabel="收藏題組">
         <Ionicons name={bookmarked ? 'star' : 'star-outline'} size={20} color={bookmarked ? colors.accent : colors.inkMute} />
       </Pressable>
-      <Ionicons name="play-circle" size={28} color={colors.ink} />
+      <Ionicons name={study ? 'eye' : 'play-circle'} size={study ? 26 : 28} color={study ? colors.success : colors.ink} />
     </Pressable>
   );
 }
@@ -73,6 +113,7 @@ function GroupRow({ g }: { g: Group }) {
 function TopicCard({ category, topic, groups }: { category: 1 | 2 | 3; topic: string; groups: Group[] }) {
   const { colors } = useTheme();
   const [open, setOpen] = useState(false);
+  const study = useAppStore((s) => !!s.settings.studyMode);
   const stats = useAppStore((s) => s.itemStats);
   const ids = groups.flatMap((g) => g.items.map((i) => i.id));
   const done = ids.filter((id) => stats[id]).length;
@@ -100,12 +141,12 @@ function TopicCard({ category, topic, groups }: { category: 1 | 2 | 3; topic: st
             <GroupRow key={g.id} g={g} />
           ))}
           <Button
-            title={`整個主題依序練習（${groups.length} 題組）`}
+            title={study ? `整個主題直接看答案（${groups.length} 題組）` : `整個主題依序練習（${groups.length} 題組）`}
             compact
             variant="outline"
-            icon="list"
+            icon={study ? 'eye-outline' : 'list'}
             style={{ marginTop: space.sm }}
-            onPress={() => startPractice(topic, groups.map((g) => g.id))}
+            onPress={() => (study ? startStudy : startPractice)(topic, groups.map((g) => g.id))}
           />
         </View>
       )}
@@ -115,6 +156,7 @@ function TopicCard({ category, topic, groups }: { category: 1 | 2 | 3; topic: st
 
 function SelfBank() {
   const { colors } = useTheme();
+  const study = useAppStore((s) => !!s.settings.studyMode);
   const [cat, setCat] = useState<1 | 2 | 3>(1);
   const topics = topicsOf(cat);
   return (
@@ -143,7 +185,7 @@ function SelfBank() {
         })}
       </View>
       <AppText variant="small" color={colors.inkSoft}>
-        {categoryMeta[cat].name}・點主題展開題組，點 ▶ 開始練習（作答後可立即看解析）
+        {categoryMeta[cat].name}・點主題展開題組，{study ? '點題組直接看答案與解析（不計分）' : '點 ▶ 開始練習（作答後可立即看解析）'}
       </AppText>
       {topics.length === 0 ? (
         <EmptyState icon="construct-outline" title="這一類還沒有題組" />
@@ -157,6 +199,7 @@ function SelfBank() {
 function OfficialBank() {
   const { colors } = useTheme();
   const sessions = officialSessions();
+  const study = useAppStore((s) => !!s.settings.studyMode);
   const stats = useAppStore((s) => s.itemStats);
   return (
     <View style={{ gap: space.md }}>
@@ -172,7 +215,7 @@ function OfficialBank() {
         const done = ids.filter((id) => stats[id]).length;
         const [y, b] = s.session.split('-');
         return (
-          <Card key={s.session} onPress={() => startOfficial(s.session)} style={styles.sessionCard}>
+          <Card key={s.session} onPress={() => (study ? startOfficialStudy : startOfficial)(s.session)} style={styles.sessionCard}>
             <View style={[styles.sessionBadge, { backgroundColor: colors.hero }]}>
               <AppText variant="heading" mono color={colors.accent}>
                 {y}
@@ -191,7 +234,7 @@ function OfficialBank() {
                 {done > 0 && <Tag label={`已看 ${done}/${ids.length}`} color={colors.success} bg={colors.successSoft} />}
               </View>
             </View>
-            <Ionicons name="chevron-forward" size={20} color={colors.inkMute} />
+            <Ionicons name={study ? 'eye' : 'chevron-forward'} size={20} color={study ? colors.success : colors.inkMute} />
           </Card>
         );
       })}
@@ -213,6 +256,7 @@ export default function Practice() {
         <AppText variant="display">題庫</AppText>
       </View>
       <Segmented value={tab} onChange={setTab} />
+      <ModeSwitch />
       {tab === 'self' ? <SelfBank /> : <OfficialBank />}
     </Screen>
   );
@@ -228,6 +272,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'transparent',
   },
+  modeBtn: { flexDirection: 'row', justifyContent: 'center', gap: 6 },
   catChip: { flex: 1, borderWidth: 1.5, borderRadius: radius.md, paddingVertical: 10, paddingHorizontal: 10, gap: 2 },
   topicHead: { flexDirection: 'row', alignItems: 'center', gap: space.md, padding: space.lg, paddingLeft: 0 },
   topicBar: { width: 4, alignSelf: 'stretch', borderTopRightRadius: 4, borderBottomRightRadius: 4 },

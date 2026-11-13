@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Tag } from '@/components/ui/primitives';
-import { describeAnswer, gradeItem } from '@/lib/grading';
+import { answerKey, describeAnswer, gradeItem } from '@/lib/grading';
 import { typeLabel, type AnswerValue, type Item } from '@/lib/types';
 import { radius, space, useTheme } from '@/theme';
 import { LinkingQ, OrderingQ } from './arrange';
@@ -12,7 +12,7 @@ import { CitationCard } from './citation';
 import { CalcQ, FillQ, MatchingQ, StepsBlock } from './inputs';
 import type { QProps } from './shared';
 
-function EssayQ({ item, answer, onChange, review }: QProps<Extract<Item, { type: 'essay' }>>) {
+function EssayQ({ item, answer, onChange, review, study }: QProps<Extract<Item, { type: 'essay' }>>) {
   const { colors } = useTheme();
   const [open, setOpen] = useState(review);
   const v = answer?.type === 'essay' ? answer.value : null;
@@ -39,7 +39,7 @@ function EssayQ({ item, answer, onChange, review }: QProps<Extract<Item, { type:
       )}
       {!open ? (
         <Button title="展開參考答案" variant="outline" icon="eye-outline" onPress={() => setOpen(true)} />
-      ) : (
+      ) : study ? null : (
         <View style={{ gap: space.sm }}>
           <AppText variant="caption" color={colors.inkSoft}>
             自我評量
@@ -102,6 +102,7 @@ export function QuestionCard({
   showExplanation,
   flagged,
   onFlag,
+  study,
 }: {
   item: Item;
   index: number;
@@ -111,8 +112,15 @@ export function QuestionCard({
   showExplanation: boolean;
   flagged?: boolean;
   onFlag?: () => void;
+  /** 直接看答案：作答區填入正解並鎖定，不顯示對錯 */
+  study?: boolean;
 }) {
   const { colors } = useTheme();
+  if (study) {
+    answer = answerKey(item);
+    review = true;
+    showExplanation = true;
+  }
   const result = review ? gradeItem(item, answer) : undefined;
   return (
     <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.line }]}>
@@ -125,7 +133,8 @@ export function QuestionCard({
         <Tag label={typeLabel[item.type]} />
         {item.points > 0 && <Tag label={`${item.points} 分`} icon="star-outline" />}
         <View style={{ flex: 1 }} />
-        {review && item.type !== 'essay' && result && (
+        {study && <Tag label="解答" color={colors.success} bg={colors.successSoft} icon="eye-outline" />}
+        {review && !study && item.type !== 'essay' && result && (
           <Tag
             label={result.correct ? '答對' : result.earned > 0 ? `部分 ${result.earned} 分` : result.answered ? '答錯' : '未作答'}
             color={result.correct ? colors.success : colors.danger}
@@ -144,7 +153,7 @@ export function QuestionCard({
           {item.stem}
         </AppText>
       )}
-      <QuestionBody item={item} answer={answer} onChange={onChange} review={review} result={result} />
+      <QuestionBody item={item} answer={answer} onChange={onChange} review={review} result={result} study={study} />
       {showExplanation && <Explanation item={item} />}
     </View>
   );

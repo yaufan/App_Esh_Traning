@@ -6,7 +6,8 @@ import { getGroup } from './bank';
 import { gradeItem, isAnswered } from './grading';
 import type { AnswerValue, Item } from './types';
 
-export type SessionMode = 'mock' | 'practice' | 'official' | 'review';
+/** study：直接看答案與解析，不作答、不計分、不列入紀錄 */
+export type SessionMode = 'mock' | 'practice' | 'official' | 'review' | 'study';
 
 export type Session = {
   id: string;
@@ -29,7 +30,7 @@ export type Session = {
 
 type ItemStat = { seen: number; correct: number; last: boolean; at: number };
 
-type Settings = { theme: 'system' | 'light' | 'dark'; haptics: boolean };
+type Settings = { theme: 'system' | 'light' | 'dark'; haptics: boolean; /** 題庫頁：點題組時直接看答案 */ studyMode?: boolean };
 
 type State = {
   sessions: Record<string, Session>;

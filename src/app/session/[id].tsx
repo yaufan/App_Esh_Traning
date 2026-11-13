@@ -10,6 +10,7 @@ import { AppText, Button, Card, HazardStripe, IconButton, Tag, useHaptic } from 
 import { Sheet } from '@/components/ui/sheet';
 import { getGroup } from '@/lib/bank';
 import { isAnswered } from '@/lib/grading';
+import { startPractice } from '@/lib/start';
 import { fmtClock, remainingSec } from '@/lib/stats';
 import { useAppStore } from '@/lib/store';
 import type { Group, Item } from '@/lib/types';
@@ -93,6 +94,7 @@ export default function SessionScreen() {
   const unanswered = allItems.filter((it) => !isAnswered(it, s.answers[it.id])).length;
   const locked = !!s.submittedAt;
   const practice = s.mode !== 'mock';
+  const study = s.mode === 'study';
   const last = s.index >= groupsInSession.length - 1;
   const lowTime = left != null && left <= 300;
 
@@ -122,7 +124,7 @@ export default function SessionScreen() {
           <IconButton icon="close" label="離開" color={colors.heroInk} onPress={() => (locked || practice ? leave() : setConfirm('leave'))} />
           <View style={{ flex: 1 }}>
             <AppText variant="caption" color={colors.inkMute} numberOfLines={1}>
-              {isMock ? `電腦化測試・${groupsInSession.length} 題組` : s.mode === 'official' ? '官方舊題・自我評量' : s.mode === 'review' ? '錯題複習・作答後看解析' : '練習模式・作答後看解析'}
+              {isMock ? `電腦化測試・${groupsInSession.length} 題組` : study ? '直接看答案・不計分、不列入紀錄' : s.mode === 'official' ? '官方舊題・自我評量' : s.mode === 'review' ? '錯題複習・作答後看解析' : '練習模式・作答後看解析'}
             </AppText>
             <AppText variant="bodyStrong" color={colors.heroInk} numberOfLines={1}>
               {s.title}
@@ -238,6 +240,9 @@ export default function SessionScreen() {
               {items.map((it, i) => {
                 const shown = locked || !!s.revealed[it.id];
                 const essay = it.type === 'essay';
+                if (study) {
+                  return <QuestionCard key={it.id} item={it} index={i + 1} answer={undefined} onChange={() => {}} review showExplanation study />;
+                }
                 return (
                   <View key={it.id} style={{ gap: space.sm }}>
                     <QuestionCard
@@ -268,6 +273,15 @@ export default function SessionScreen() {
                   </View>
                 );
               })}
+
+              {study && (
+                <Button
+                  title="換我作答這個題組"
+                  variant="outline"
+                  icon="create-outline"
+                  onPress={() => startPractice(group.title, [group.id])}
+                />
+              )}
             </>
           )}
         </View>
@@ -280,12 +294,14 @@ export default function SessionScreen() {
           <View style={{ flex: 1, alignItems: 'center' }}>
             {!locked && (
               <AppText variant="caption" color={colors.inkMute}>
-                未作答 {unanswered} 題
+                {study ? `題組 ${s.index + 1}/${groupsInSession.length}` : `未作答 ${unanswered} 題`}
               </AppText>
             )}
           </View>
           {last ? (
-            locked ? (
+            study ? (
+              <Button title="看完了" variant="accent" icon="checkmark-done" compact onPress={leave} />
+            ) : locked ? (
               <Button title="看成績" variant="accent" icon="ribbon-outline" compact onPress={() => router.replace({ pathname: '/result/[id]', params: { id: s.id } })} />
             ) : (
               <Button title={isMock ? '交卷' : '完成'} variant="accent" icon="checkmark-done" compact onPress={() => (isMock ? setConfirm('submit') : finish())} />

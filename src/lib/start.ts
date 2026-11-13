@@ -28,6 +28,19 @@ export function startPractice(title: string, groupIds: string[]) {
   router.push({ pathname: '/session/[id]', params: { id } });
 }
 
+/** 直接看答案：不作答、不計分。舊的看答案紀錄用不到，順手清掉 */
+export function startStudy(title: string, groupIds: string[]) {
+  const st = useAppStore.getState();
+  for (const sid of st.history) if (st.sessions[sid]?.mode === 'study') st.discard(sid);
+  const id = st.startSession({ mode: 'study', title, groupIds: groupIds.filter((g) => getGroup(g)) });
+  router.push({ pathname: '/session/[id]', params: { id } });
+}
+
+export function startOfficialStudy(session: string) {
+  const s = officialSessions().find((x) => x.session === session);
+  if (s) startStudy(`${session} 官方術科試題`, s.groups.map((g) => g.id));
+}
+
 export function startRandomPractice(n = 5) {
   const seen = new Set(Object.keys(useAppStore.getState().itemStats));
   const fresh = shuffled(selfGroups.filter((g) => !g.items.some((it) => seen.has(it.id))));

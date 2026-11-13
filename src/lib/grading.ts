@@ -140,6 +140,30 @@ export function gradeItem(item: Item, a: AnswerValue | undefined): ItemResult {
   }
 }
 
+/** 把正確答案轉成作答值：「直接看答案」時，讓各題型的作答區直接顯示正解 */
+export function answerKey(item: Item): AnswerValue {
+  switch (item.type) {
+    case 'truefalse':
+      return { type: 'truefalse', value: item.answer };
+    case 'single':
+      return { type: 'single', value: item.answer };
+    case 'multi':
+      return { type: 'multi', value: [...item.answer] };
+    case 'ordering':
+      return { type: 'ordering', value: [...item.answer] };
+    case 'matching':
+      return { type: 'matching', value: { ...item.answer } };
+    case 'fill':
+      return { type: 'fill', value: Object.fromEntries(item.blanks.map((b) => [b.id, String(item.answer[b.id])])) };
+    case 'linking':
+      return { type: 'linking', value: Object.fromEntries(item.left.map((l) => [l.id, [...item.answer[l.id]]])) };
+    case 'calc':
+      return { type: 'calc', value: String(item.answer) };
+    case 'essay':
+      return { type: 'essay', value: null };
+  }
+}
+
 /** 正確答案的文字說明，給解析區使用 */
 export function describeAnswer(item: Item): string {
   switch (item.type) {

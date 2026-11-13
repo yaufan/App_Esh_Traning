@@ -16,6 +16,7 @@
 - 審題確立的規則：排序題先後要條文明文；「其他有關…事項」等概括條款不列為得分要點；題組標題不可洩題；不寫條文以外的經驗說法（如「常考陷阱」）；官方舊題的選項文字不改，和現行法無法唯一對應就不收。
 - 已公布但尚未施行的條文（依據庫標 `[尚未施行-禁止出題]`）不出題。法規修正時照 `data-pipeline/README.md` 重跑。
 - APP 不連網、沒有帳號、沒有廣告，作答紀錄只存在手機（AsyncStorage）。
+- 「直接看答案」（session 的 `study` 模式）：題庫頁的開關 `settings.studyMode`；作答區用 `answerKey()` 填入正解，不計分、不寫入 `itemStats`／錯題本。新增題型時要同步補 `answerKey()`。
 
 ## 發布（做成可以安裝的 APK、給下載 QR code）
 流程照 yaufan 兒童 APP 的 `release-kids-app`，改成 Expo：
