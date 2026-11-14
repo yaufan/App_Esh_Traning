@@ -11,6 +11,7 @@ import { MultiQ, SingleQ, TrueFalseQ } from './choice';
 import { CitationCard } from './citation';
 import { CalcQ, FillQ, MatchingQ, StepsBlock } from './inputs';
 import type { QProps } from './shared';
+import { ItemTools } from './tools';
 
 function EssayQ({ item, answer, onChange, review, study }: QProps<Extract<Item, { type: 'essay' }>>) {
   const { colors } = useTheme();
@@ -212,6 +213,7 @@ export function Explanation({ item }: { item: Item }) {
           ))}
         </View>
       )}
+      <ItemTools item={item} />
     </View>
   );
 }

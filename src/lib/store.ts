@@ -30,13 +30,52 @@ export type Session = {
 
 type ItemStat = { seen: number; correct: number; last: boolean; at: number };
 
-type Settings = { theme: 'system' | 'light' | 'dark'; haptics: boolean; /** 題庫頁：點題組時直接看答案 */ studyMode?: boolean };
+type Settings = {
+  theme: 'system' | 'light' | 'dark';
+  haptics: boolean;
+  /** 題庫頁：點題組時直接看答案 */
+  studyMode?: boolean;
+  /** 字體大小倍率：1 標準、1.12 大、1.25 特大 */
+  fontScale?: number;
+  /** 考試日期 YYYY-MM-DD */
+  examDate?: string;
+  /** 每日目標（子題數） */
+  dailyGoal?: number;
+};
+
+/** 間隔複習：答錯後依序隔 1、3、7、14 天複習，每次到期答對就進下一階，全部答對才移出錯題本 */
+export const SRS_INTERVALS = [1, 3, 7, 14];
+export type SrsEntry = { stage: number; due: number };
+export type DayLog = { n: number; ok: number };
+
+const DAY = 86400000;
+export function dayKey(ts = Date.now()) {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+export function startOfDay(ts = Date.now()) {
+  const d = new Date(ts);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+/** 錯題是否已到複習日（舊版留下、沒有排程的錯題視為已到期） */
+export function isDue(srs: Record<string, SrsEntry>, itemId: string, now = Date.now()) {
+  const e = srs[itemId];
+  return !e || e.due <= now;
+}
 
 type State = {
   sessions: Record<string, Session>;
   history: string[];
   itemStats: Record<string, ItemStat>;
   wrong: Record<string, number>;
+  srs: Record<string, SrsEntry>;
+  /** 每天作答的子題數與答對數，key 是 YYYY-MM-DD */
+  daily: Record<string, DayLog>;
+  /** 每個子題的筆記 */
+  notes: Record<string, string>;
+  /** 速記卡：標成「記得了」的卡片 */
+  cardsKnown: Record<string, number>;
   bookmarks: Record<string, number>;
   settings: Settings;
   hydrated: boolean;
@@ -50,6 +89,10 @@ type State = {
   discard: (sid: string) => void;
   toggleBookmark: (groupId: string) => void;
   removeWrong: (itemId: string) => void;
+  setNote: (itemId: string, text: string) => void;
+  setCardKnown: (itemId: string, known: boolean) => void;
+  resetCards: () => void;
+  importBackup: (data: BackupData) => void;
   setSetting: <K extends keyof Settings>(k: K, v: Settings[K]) => void;
   resetProgress: () => void;
 };
@@ -75,6 +118,42 @@ function recordResult(state: State, item: Item, a: AnswerValue | undefined) {
   };
 }
 
+export type BackupData = Pick<State, 'sessions' | 'history' | 'itemStats' | 'wrong' | 'srs' | 'daily' | 'notes' | 'cardsKnown' | 'bookmarks' | 'settings'>;
+
+type Progress = Pick<State, 'itemStats' | 'wrong' | 'srs' | 'daily'>;
+
+/** 把一題的作答結果記進：答對率、錯題本、間隔複習排程、每日紀錄。沒有可記錄的結果時原樣回傳。 */
+function applyResult(p: Progress, item: Item, a: AnswerValue | undefined, now = Date.now()): Progress {
+  const { stat, ok } = recordResult(p as State, item, a);
+  if (!stat || ok == null) return p;
+  const itemStats = { ...p.itemStats, [item.id]: stat };
+  const wrong = { ...p.wrong };
+  const srs = { ...p.srs };
+  const today = startOfDay(now);
+  if (!ok) {
+    wrong[item.id] = now;
+    srs[item.id] = { stage: 0, due: today + SRS_INTERVALS[0] * DAY };
+  } else if (wrong[item.id]) {
+    const cur = srs[item.id] ?? { stage: 0, due: 0 };
+    if (cur.due <= now) {
+      const stage = cur.stage + 1;
+      if (stage >= SRS_INTERVALS.length) {
+        delete wrong[item.id];
+        delete srs[item.id];
+      } else {
+        srs[item.id] = { stage, due: today + SRS_INTERVALS[stage] * DAY };
+      }
+    }
+    // 還沒到期就先答對：排程不變，到期日再考一次
+  }
+  const k = dayKey(now);
+  const d = p.daily[k] ?? { n: 0, ok: 0 };
+  const daily = { ...p.daily, [k]: { n: d.n + 1, ok: d.ok + (ok ? 1 : 0) } };
+  const keys = Object.keys(daily);
+  if (keys.length > 200) for (const old of keys.sort().slice(0, keys.length - 200)) delete daily[old];
+  return { itemStats, wrong, srs, daily };
+}
+
 export function sessionItems(s: Session): { groupId: string; item: Item }[] {
   const out: { groupId: string; item: Item }[] = [];
   for (const gid of s.groupIds) {
@@ -94,6 +173,10 @@ export const useAppStore = create<State>()(
       history: [],
       itemStats: {},
       wrong: {},
+      srs: {},
+      daily: {},
+      notes: {},
+      cardsKnown: {},
       bookmarks: {},
       settings: { theme: 'system', haptics: true },
       hydrated: false,
@@ -132,14 +215,9 @@ export const useAppStore = create<State>()(
         set((st) => {
           const s = st.sessions[sid];
           if (!s || s.revealed[item.id]) return {};
-          const { stat, ok } = recordResult(st, item, s.answers[item.id]);
-          const wrong = { ...st.wrong };
-          if (ok === true) delete wrong[item.id];
-          else if (ok === false) wrong[item.id] = Date.now();
           return {
             sessions: { ...st.sessions, [sid]: { ...s, revealed: { ...s.revealed, [item.id]: true } } },
-            itemStats: stat ? { ...st.itemStats, [item.id]: stat } : st.itemStats,
-            wrong,
+            ...applyResult(st, item, s.answers[item.id]),
           };
         }),
 
@@ -147,8 +225,7 @@ export const useAppStore = create<State>()(
         const st = get();
         const s = st.sessions[sid];
         if (!s || s.submittedAt) return;
-        const itemStats = { ...st.itemStats };
-        const wrong = { ...st.wrong };
+        let prog: Progress = { itemStats: st.itemStats, wrong: st.wrong, srs: st.srs, daily: st.daily };
         let score = 0;
         let maxScore = 0;
         for (const { item } of sessionItems(s)) {
@@ -160,18 +237,14 @@ export const useAppStore = create<State>()(
           }
           if (s.revealed[item.id]) continue; // 練習時已記錄過
           if (!isAnswered(item, a)) continue; // 沒作答的不列入紀錄與錯題本
-          const { stat, ok } = recordResult({ ...st, itemStats }, item, a);
-          if (stat) itemStats[item.id] = stat;
-          if (ok === true) delete wrong[item.id];
-          else if (ok === false) wrong[item.id] = Date.now();
+          prog = applyResult(prog, item, a);
         }
         set({
           sessions: {
             ...st.sessions,
             [sid]: { ...s, submittedAt: Date.now(), score: Math.round(score * 100) / 100, maxScore },
           },
-          itemStats,
-          wrong,
+          ...prog,
         });
       },
 
@@ -193,13 +266,36 @@ export const useAppStore = create<State>()(
       removeWrong: (itemId) =>
         set((st) => {
           const w = { ...st.wrong };
+          const srs = { ...st.srs };
           delete w[itemId];
-          return { wrong: w };
+          delete srs[itemId];
+          return { wrong: w, srs };
         }),
+
+      setNote: (itemId, text) =>
+        set((st) => {
+          const notes = { ...st.notes };
+          if (text.trim()) notes[itemId] = text.trim();
+          else delete notes[itemId];
+          return { notes };
+        }),
+
+      setCardKnown: (itemId, known) =>
+        set((st) => {
+          const c = { ...st.cardsKnown };
+          if (known) c[itemId] = Date.now();
+          else delete c[itemId];
+          return { cardsKnown: c };
+        }),
+
+      resetCards: () => set({ cardsKnown: {} }),
+
+      importBackup: (data) => set({ ...data }),
 
       setSetting: (k, v) => set((st) => ({ settings: { ...st.settings, [k]: v } })),
 
-      resetProgress: () => set({ sessions: {}, history: [], itemStats: {}, wrong: {}, bookmarks: {} }),
+      // 筆記與設定保留
+      resetProgress: () => set({ sessions: {}, history: [], itemStats: {}, wrong: {}, srs: {}, daily: {}, cardsKnown: {}, bookmarks: {} }),
     }),
     {
       name: 'esh-train-v1',

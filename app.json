@@ -2,7 +2,7 @@
   "expo": {
     "name": "職安乙級術科練習",
     "slug": "esh-training",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "eshtraining",

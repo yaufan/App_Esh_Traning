@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { AppText } from '@/components/ui/primitives';
 import { getArticle } from '@/lib/bank';
 import type { Citation } from '@/lib/types';
-import { radius, space, type, useTheme } from '@/theme';
+import { radius, space, useTheme, useType } from '@/theme';
 
 function norm(s: string) {
   return s.replace(/\s+/g, '');
@@ -32,6 +32,7 @@ function highlight(text: string, quote: string) {
 
 export function CitationCard({ c, expanded = false }: { c: Citation; expanded?: boolean }) {
   const { colors } = useTheme();
+  const type = useType();
   const found = getArticle(c.pcode, c.article);
   const lawName = found?.law.name ?? c.pcode;
   const isTable = c.article.startsWith('附表');

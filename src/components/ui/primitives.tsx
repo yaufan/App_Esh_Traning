@@ -19,7 +19,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Defs, Pattern, Rect } from 'react-native-svg';
 
 import { useAppStore } from '@/lib/store';
-import { fonts, MAX_WIDTH, radius, space, type, useTheme } from '@/theme';
+import { fonts, MAX_WIDTH, radius, space, useTheme, useType, type type } from '@/theme';
 
 export type IconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -33,7 +33,7 @@ export function AppText({
   ...rest
 }: TextProps & { variant?: Variant; color?: string; mono?: boolean }) {
   const { colors } = useTheme();
-  const base = type[variant];
+  const base = useType()[variant];
   return (
     <Text
       {...rest}

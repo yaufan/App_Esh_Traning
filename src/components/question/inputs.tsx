@@ -7,7 +7,7 @@ import { AppText, useHaptic } from '@/components/ui/primitives';
 import { Sheet } from '@/components/ui/sheet';
 import { displayUnit } from '@/lib/grading';
 import type { CalcItem, FillItem, MatchingItem } from '@/lib/types';
-import { fonts, radius, space, type, useTheme } from '@/theme';
+import { fonts, radius, space, useFontScale, useTheme, useType } from '@/theme';
 import { Hint, OptionCard, Slot, type MarkState, type QProps } from './shared';
 
 /* ───────── 配合題 ───────── */
@@ -17,6 +17,7 @@ export function MatchingQ({ item, answer, onChange, review, result }: QProps<Mat
   const haptic = useHaptic();
   const v = answer?.type === 'matching' ? answer.value : {};
   const [open, setOpen] = useState<string | null>(null);
+  const k = useFontScale();
   const optText = (id?: string) => item.options.find((o) => o.id === id)?.text;
 
   return (
@@ -42,13 +43,13 @@ export function MatchingQ({ item, answer, onChange, review, result }: QProps<Mat
         if (review) state = result?.parts?.[b.id] ? 'correct' : 'wrong';
         return (
           <View key={b.id} style={[styles.matchRow, { borderColor: colors.line }]}>
-            <AppText variant="smallStrong" mono color={colors.inkSoft} style={{ width: 30, marginTop: 3 }}>
+            <AppText variant="smallStrong" mono color={colors.inkSoft} style={{ width: Math.round(32 * k), marginTop: 3 }}>
               ({i + 1})
             </AppText>
             <AppText variant="body" style={{ flex: 1 }}>
               {b.label}
             </AppText>
-            <View style={{ width: 128, gap: 4 }}>
+            <View style={{ width: Math.round(128 * k), gap: 4 }}>
               <Slot
                 value={picked ? `${picked}　${optText(picked) ?? ''}` : undefined}
                 placeholder="選擇"
@@ -90,6 +91,7 @@ export function MatchingQ({ item, answer, onChange, review, result }: QProps<Mat
 
 export function FillQ({ item, answer, onChange, review, result }: QProps<FillItem>) {
   const { colors } = useTheme();
+  const type = useType();
   const v = answer?.type === 'fill' ? answer.value : {};
   const [open, setOpen] = useState<string | null>(null);
   const blank = item.blanks.find((b) => b.id === open);
@@ -99,7 +101,7 @@ export function FillQ({ item, answer, onChange, review, result }: QProps<FillIte
   const parts = item.stem.split(/(\{\{[^}]+\}\})/g);
   return (
     <View style={{ gap: space.md }}>
-      <Text style={[type.body, { color: colors.ink, lineHeight: 34, fontWeight: '600' }]}>
+      <Text style={[type.body, { color: colors.ink, lineHeight: Math.round(type.body.fontSize * 2.1), fontWeight: '600' }]}>
         {parts.map((p, i) => {
           const m = p.match(/^\{\{(.+)\}\}$/);
           if (!m) return <Text key={i}>{p}</Text>;

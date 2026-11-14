@@ -1,10 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
 import { AppText, Button, Card, EmptyState, ProgressBar, Screen, Tag } from '@/components/ui/primitives';
-import { officialSessions, topicsOf } from '@/lib/bank';
+import { officialSessions, searchGroups, topicsOf } from '@/lib/bank';
 import { startOfficial, startOfficialStudy, startPractice, startStudy } from '@/lib/start';
 import { useAppStore } from '@/lib/store';
 import type { Group } from '@/lib/types';
@@ -242,7 +242,44 @@ function OfficialBank() {
   );
 }
 
+function SearchResults({ q }: { q: string }) {
+  const { colors } = useTheme();
+  const study = useAppStore((s) => !!s.settings.studyMode);
+  const hits = searchGroups(q);
+  if (hits.length === 0) return <EmptyState icon="search-outline" title="找不到符合的題目" body="換個關鍵字試試；多個關鍵字用空白隔開。" />;
+  return (
+    <View style={{ gap: space.md }}>
+      <AppText variant="caption" color={colors.inkSoft}>
+        找到 {hits.length} 個題組{hits.length >= 40 ? '（只顯示前 40 個）' : ''}・點一下{study ? '直接看答案' : '開始練習'}
+      </AppText>
+      {hits.map(({ group: g, snippet }) => (
+        <Card key={g.id} onPress={() => (study ? startStudy : startPractice)(g.title, [g.id])} style={{ gap: 6 }}>
+          <View style={{ flexDirection: 'row', gap: 6, alignItems: 'center' }}>
+            <Tag
+              label={g.source === 'official-old' ? `${g.session} 官方舊題` : categoryMeta[g.category].short}
+              color="#fff"
+              bg={colors[categoryMeta[g.category].key]}
+            />
+            <AppText variant="caption" color={colors.inkMute} style={{ flex: 1 }} numberOfLines={1}>
+              {g.topic}
+            </AppText>
+            <Ionicons name={study ? 'eye' : 'play-circle'} size={22} color={study ? colors.success : colors.ink} />
+          </View>
+          <AppText variant="bodyStrong">{g.title}</AppText>
+          {!!snippet && (
+            <AppText variant="small" color={colors.inkSoft} numberOfLines={2}>
+              {snippet}
+            </AppText>
+          )}
+        </Card>
+      ))}
+    </View>
+  );
+}
+
 export default function Practice() {
+  const { colors } = useTheme();
+  const [q, setQ] = useState('');
   const params = useLocalSearchParams<{ tab?: string }>();
   const [tab, setTab] = useState<'self' | 'official'>(params.tab === 'official' ? 'official' : 'self');
   const [prevParam, setPrevParam] = useState(params.tab);
@@ -255,9 +292,31 @@ export default function Practice() {
       <View style={{ paddingTop: space.md }}>
         <AppText variant="display">題庫</AppText>
       </View>
-      <Segmented value={tab} onChange={setTab} />
+      <View style={[styles.search, { backgroundColor: colors.surface, borderColor: colors.line }]}>
+        <Ionicons name="search" size={18} color={colors.inkMute} />
+        <TextInput
+          value={q}
+          onChangeText={setQ}
+          placeholder="搜尋題目：例如 局限空間、施工架、14 日"
+          placeholderTextColor={colors.inkMute}
+          returnKeyType="search"
+          style={{ flex: 1, fontSize: 16, color: colors.ink, paddingVertical: 10 }}
+        />
+        {q.length > 0 && (
+          <Pressable onPress={() => setQ('')} hitSlop={10} accessibilityLabel="清除搜尋">
+            <Ionicons name="close-circle" size={20} color={colors.inkMute} />
+          </Pressable>
+        )}
+      </View>
       <ModeSwitch />
-      {tab === 'self' ? <SelfBank /> : <OfficialBank />}
+      {q.trim() ? (
+        <SearchResults q={q} />
+      ) : (
+        <>
+          <Segmented value={tab} onChange={setTab} />
+          {tab === 'self' ? <SelfBank /> : <OfficialBank />}
+        </>
+      )}
     </Screen>
   );
 }
@@ -272,6 +331,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'transparent',
   },
+  search: { flexDirection: 'row', alignItems: 'center', gap: space.sm, borderWidth: 1, borderRadius: radius.md, paddingHorizontal: space.md },
   modeBtn: { flexDirection: 'row', justifyContent: 'center', gap: 6 },
   catChip: { flex: 1, borderWidth: 1.5, borderRadius: radius.md, paddingVertical: 10, paddingHorizontal: 10, gap: 2 },
   topicHead: { flexDirection: 'row', alignItems: 'center', gap: space.md, padding: space.lg, paddingLeft: 0 },

@@ -2,7 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router/js-tabs';
 import { Platform } from 'react-native';
 
-import { useAppStore } from '@/lib/store';
+import { useNow } from '@/lib/stats';
+import { isDue, useAppStore } from '@/lib/store';
 import { useTheme } from '@/theme';
 
 type Icon = keyof typeof Ionicons.glyphMap;
@@ -16,7 +17,9 @@ const TABS: { name: string; title: string; icon: Icon; iconActive: Icon }[] = [
 
 export default function TabLayout() {
   const { colors } = useTheme();
-  const wrongCount = useAppStore((s) => Object.keys(s.wrong).length);
+  // 徽章只算今天到期要複習的錯題
+  const now = useNow();
+  const wrongCount = useAppStore((s) => Object.keys(s.wrong).filter((id) => isDue(s.srs, id, now)).length);
   return (
     <Tabs
       screenOptions={{

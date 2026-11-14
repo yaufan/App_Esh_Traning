@@ -113,3 +113,77 @@ export function composeMockExam(seenItemIds: Set<string>, size = 10): string[] {
 export function shuffled<T>(arr: T[]) {
   return shuffle(arr);
 }
+
+/* ───────── 法條反查：哪一條被哪些子題引用 ───────── */
+
+export type ItemRef = { item: Item; group: Group };
+const citedIndex = new Map<string, ItemRef[]>();
+for (const g of groups)
+  for (const it of g.items) {
+    const seen = new Set<string>();
+    for (const c of it.citations) {
+      const k = `${c.pcode}#${c.article}`;
+      if (seen.has(k)) continue;
+      seen.add(k);
+      if (!citedIndex.has(k)) citedIndex.set(k, []);
+      citedIndex.get(k)!.push({ item: it, group: g });
+    }
+  }
+export const citedBy = (pcode: string, article: string): ItemRef[] => citedIndex.get(`${pcode}#${article}`) ?? [];
+
+/* ───────── 題目搜尋 ───────── */
+
+/** 題幹裡的填空記號換成底線，給列表與搜尋結果顯示 */
+export const plainStem = (stem: string) => stem.replace(/\{\{[^}]+\}\}/g, '＿＿');
+
+function itemText(it: Item): string {
+  const parts = [plainStem(it.stem), it.explanation];
+  if ('options' in it) parts.push(...it.options.map((o) => o.text));
+  if (it.type === 'matching') parts.push(...it.blanks.map((b) => b.label));
+  if (it.type === 'linking') parts.push(...it.left.map((l) => l.text), ...it.columns.flatMap((c) => c.options.map((o) => o.text)));
+  if (it.type === 'essay') parts.push(...it.modelAnswer);
+  return parts.join('\n');
+}
+
+let searchIndex: { group: Group; head: string; items: { item: Item; text: string }[] }[] | null = null;
+
+export type SearchHit = { group: Group; snippet: string; where: string };
+
+/** 關鍵字搜尋題組：比對標題、主題、情境、題幹、選項、解析。多個關鍵字以空白分隔，全部都要出現。 */
+export function searchGroups(query: string, limit = 40): SearchHit[] {
+  const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  if (!words.length) return [];
+  searchIndex ??= groups.map((g) => ({
+    group: g,
+    head: [g.title, g.topic, g.context ?? '', g.session ?? ''].join('\n').toLowerCase(),
+    items: g.items.map((it) => ({ item: it, text: itemText(it).toLowerCase() })),
+  }));
+  const hits: (SearchHit & { rank: number })[] = [];
+  for (const e of searchIndex) {
+    const all = e.head + '\n' + e.items.map((i) => i.text).join('\n');
+    if (!words.every((w) => all.includes(w))) continue;
+    const inHead = words.every((w) => e.head.includes(w));
+    const first = words[0];
+    let snippet = '';
+    let where = '標題或主題';
+    if (!inHead || !e.group.title.toLowerCase().includes(first)) {
+      const hit = e.items.find((i) => i.text.includes(first));
+      if (hit) {
+        const raw = itemText(hit.item);
+        const at = raw.toLowerCase().indexOf(first);
+        const from = Math.max(0, at - 18);
+        snippet = (from > 0 ? '…' : '') + raw.slice(from, at + first.length + 40).replace(/\n/g, ' ') + '…';
+        where = '題目內容';
+      }
+    }
+    hits.push({ group: e.group, snippet, where, rank: inHead ? 0 : 1 });
+  }
+  return hits.sort((a, b) => a.rank - b.rank).slice(0, limit);
+}
+
+/* ───────── 數字速記卡：由審過的填空題直接產生，不另外編內容 ───────── */
+
+export type FillCard = { item: Extract<Item, { type: 'fill' }>; group: Group };
+export const fillCards: FillCard[] = selfGroups.flatMap((g) =>
+  g.items.filter((it): it is Extract<Item, { type: 'fill' }> => it.type === 'fill').map((item) => ({ item, group: g })),
+);

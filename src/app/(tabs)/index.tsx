@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import {
@@ -14,9 +15,10 @@ import {
   Tag,
   type IconName,
 } from '@/components/ui/primitives';
-import { meta, officialSessions } from '@/lib/bank';
-import { findOpen, startMock, startRandomPractice } from '@/lib/start';
-import { fmtClock, fmtDate, remainingSec, useOverview } from '@/lib/stats';
+import { PlanSheet } from '@/components/ui/plan-sheet';
+import { fillCards, meta, officialSessions } from '@/lib/bank';
+import { findOpen, startMock, startRandomPractice, startWrongReview } from '@/lib/start';
+import { fmtClock, fmtDate, remainingSec, useOverview, useToday } from '@/lib/stats';
 import { useAppStore } from '@/lib/store';
 import { categoryMeta, radius, space, useTheme } from '@/theme';
 
@@ -64,6 +66,8 @@ function QuickTile({ icon, title, sub, onPress, tint }: { icon: IconName; title:
 export default function Home() {
   const { colors } = useTheme();
   const ov = useOverview();
+  const today = useToday();
+  const [plan, setPlan] = useState(false);
   const sessions = useAppStore((s) => s.sessions);
   const history = useAppStore((s) => s.history);
   const setSetting = useAppStore((s) => s.setSetting);
@@ -122,14 +126,67 @@ export default function Home() {
         </View>
       </Card>
 
+      {/* 今天的進度：每日目標、考試倒數、到期的錯題 */}
+      <Card style={{ gap: space.md }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+          <View style={{ flex: 1, gap: 6 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 6 }}>
+              <AppText variant="smallStrong">今天</AppText>
+              <AppText variant="heading" mono color={today.done >= today.goal ? colors.success : colors.ink}>
+                {today.done}
+              </AppText>
+              <AppText variant="small" color={colors.inkSoft}>
+                / {today.goal} 題
+              </AppText>
+              {today.streak > 1 && <Tag label={`連續 ${today.streak} 天`} icon="flame-outline" color={colors.cat3} />}
+            </View>
+            <ProgressBar value={today.goal ? today.done / today.goal : 0} color={today.done >= today.goal ? colors.success : colors.accent} />
+          </View>
+          <Pressable
+            onPress={() => setPlan(true)}
+            accessibilityLabel="設定考試日期與每日目標"
+            style={({ pressed }) => [styles.countdown, { backgroundColor: colors.surfaceAlt, opacity: pressed ? 0.8 : 1 }]}>
+            {today.daysLeft != null ? (
+              <>
+                <AppText variant="caption" color={colors.inkSoft}>
+                  {today.daysLeft >= 0 ? '距離考試' : '考試已過'}
+                </AppText>
+                <AppText variant="title" mono color={today.daysLeft >= 0 && today.daysLeft <= 14 ? colors.danger : colors.ink}>
+                  {Math.abs(today.daysLeft)}
+                  <AppText variant="caption" color={colors.inkSoft}>
+                    {' '}天
+                  </AppText>
+                </AppText>
+              </>
+            ) : (
+              <>
+                <Ionicons name="calendar-outline" size={20} color={colors.ink} />
+                <AppText variant="caption" color={colors.inkSoft}>
+                  設定考試日
+                </AppText>
+              </>
+            )}
+          </Pressable>
+        </View>
+        {today.dueIds.length > 0 && (
+          <Button
+            title={`複習今天到期的錯題 ${today.dueIds.length} 題`}
+            compact
+            variant="outline"
+            icon="refresh"
+            onPress={() => startWrongReview(today.dueIds)}
+          />
+        )}
+      </Card>
+
       {/* 數據 */}
       <View style={styles.statRow}>
         <Stat value={String(ov.seen)} suffix={`/${ov.totalItems}`} label="已練習子題" />
         <Stat value={ov.seen ? String(Math.round(ov.accuracy * 100)) : '–'} suffix={ov.seen ? '%' : undefined} label="最近一次答對率" />
-        <Stat value={String(ov.wrongCount)} label="待複習錯題" />
+        <Stat value={String(ov.wrongCount)} label="錯題本" />
       </View>
 
-      <SectionTitle title="三大類進度" action="分類練習" onAction={() => router.push('/practice')} />
+      <SectionTitle title="三大類進度" action="學習分析" onAction={() => router.push('/stats')} />
       <Card style={{ gap: space.lg }}>
         {ov.byCat.map((c) => {
           const m = categoryMeta[c.category];
@@ -176,7 +233,8 @@ export default function Home() {
           tint={colors.cat2}
           onPress={() => router.push({ pathname: '/practice', params: { tab: 'official' } })}
         />
-        <QuickTile icon="refresh-circle-outline" title="錯題複習" sub={`${ov.wrongCount} 題待複習`} tint={colors.danger} onPress={() => router.push('/review')} />
+        <QuickTile icon="refresh-circle-outline" title="錯題複習" sub={`今天到期 ${today.dueIds.length} 題`} tint={colors.danger} onPress={() => router.push('/review')} />
+        <QuickTile icon="albums-outline" title="數字速記卡" sub={`${fillCards.length} 張・數值與期限`} tint={colors.cat2} onPress={() => router.push('/cards')} />
         <QuickTile icon="library-outline" title="查法規" sub="題目引用的條文全文" tint={colors.cat3} onPress={() => router.push('/laws')} />
       </View>
 
@@ -223,6 +281,8 @@ export default function Home() {
         </View>
         <Ionicons name="chevron-forward" size={18} color={colors.inkMute} />
       </Card>
+
+      <PlanSheet visible={plan} onClose={() => setPlan(false)} suggested={today.suggested} />
     </Screen>
   );
 }
@@ -231,6 +291,7 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', paddingTop: space.md },
   statRow: { flexDirection: 'row', gap: space.sm },
   stat: { flex: 1, borderWidth: 1, borderRadius: radius.md, padding: space.md, gap: 2 },
+  countdown: { minWidth: 84, borderRadius: radius.md, paddingVertical: space.sm, paddingHorizontal: space.md, alignItems: 'center', gap: 2 },
   catDot: { width: 10, height: 10, borderRadius: 3 },
   tileGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   tile: { width: '48.5%', flexGrow: 1, borderWidth: 1, borderRadius: radius.lg, padding: space.lg, gap: 4 },
