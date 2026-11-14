@@ -15,7 +15,7 @@ assert not (ids & fails), f'failed items still present: {ids & fails}'
 unreviewed = ids - set(verdict)
 assert not unreviewed, f'items without review: {unreviewed}'
 for x in rev:
-    if x['verdict'] == 'fix': x.setdefault('resolution', '已依審題意見修正（2026-11-07），validate.py 通過')
+    if x['verdict'] == 'fix': x.setdefault('resolution', '已依審題意見修正，validate.py 通過')
     if x['verdict'] == 'fail': x.setdefault('resolution', '已刪除')
 json.dump(rev, open(f'reviews/review_{X}.json', 'w'), ensure_ascii=False, indent=1)
 os.makedirs('verified', exist_ok=True)

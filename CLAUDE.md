@@ -15,8 +15,12 @@
   3. `data-pipeline/scripts/mark_verified.py` 通過後，才用 `build_app_data.py` 產生 `src/data/`。
 - 審題確立的規則：排序題先後要條文明文；「其他有關…事項」等概括條款不列為得分要點；題組標題不可洩題；不寫條文以外的經驗說法（如「常考陷阱」）；官方舊題的選項文字不改，和現行法無法唯一對應就不收。
 - 已公布但尚未施行的條文（依據庫標 `[尚未施行-禁止出題]`）不出題。法規修正時照 `data-pipeline/README.md` 重跑。
-- APP 不連網、沒有帳號、沒有廣告，作答紀錄只存在手機（AsyncStorage）。
+- 出題還要遵守 `data-pipeline/EXTRA_RULES.md`（審題後確立的補充規則）。同一題組的子題會顯示在同一頁，所以子題之間不可互相洩題；新題要和既有題庫、同批其他新題比對，同條文同考點的擇一保留。依審題意見修改過的題目要再交給另一位審題者複審。
+- APP 不連網、沒有帳號、沒有廣告，作答紀錄只存在手機（AsyncStorage）。備份是匯出檔案交給手機的分享功能，回報題目是開分享或瀏覽器，APP 本身都不連網；不要加會帶入網路、定位、廣告權限的套件（release.yml 會擋）。
 - 「直接看答案」（session 的 `study` 模式）：題庫頁的開關 `settings.studyMode`；作答區用 `answerKey()` 填入正解，不計分、不寫入 `itemStats`／錯題本。新增題型時要同步補 `answerKey()`。
+- 作答結果一律經 `store.ts` 的 `applyResult()` 記錄（答對率、錯題本、間隔複習 `srs`、每日紀錄 `daily`）。間隔複習：答錯隔 1、3、7、14 天複習，到期答對才進下一階。新增要保存的狀態時，`backup.ts` 的匯出與 `parseBackup()` 檢查都要一起補。
+- 文字大小：用 `AppText` 或 `useType()`，不要直接用 tokens 的 `type`，否則「字體大小」設定不會生效。元件裡不要直接呼叫 `Date.now()`（lint 會擋），用 `useNow()`。
+- 數字速記卡（`fillCards`）、法條反查（`citedBy`）、搜尋（`searchGroups`）都是由審過的題庫機械產生，不另外編內容。
 
 ## 發布（做成可以安裝的 APK、給下載 QR code）
 流程照 yaufan 兒童 APP 的 `release-kids-app`，改成 Expo：

@@ -49,7 +49,7 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "check:version": "node scripts/check-version.js",
-    "check": "node scripts/check-version.js && tsc --noEmit && eslint src && python3 data-pipeline/scripts/validate.py data-pipeline/bank/self_A.json data-pipeline/bank/self_B.json data-pipeline/bank/self_C.json data-pipeline/bank/self_D.json data-pipeline/bank/self_E.json data-pipeline/bank/self_F.json data-pipeline/bank/official_105.json data-pipeline/bank/official_106.json data-pipeline/bank/official_107.json data-pipeline/bank/official_108.json data-pipeline/bank/official_109.json"
+    "check": "node scripts/check-version.js && tsc --noEmit && eslint src && python3 data-pipeline/scripts/validate.py data-pipeline/bank/*.json"
   },
   "private": true
 }

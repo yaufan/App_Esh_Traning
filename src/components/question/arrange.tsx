@@ -204,6 +204,8 @@ function LinkingLines({ item, answer, onChange, review, result }: QProps<Linking
   const [active, setActive] = useState<{ left: string; col: number } | null>(null);
   const [colX, setColX] = useState<Record<number, { x: number; w: number }>>({});
   const [nodeY, setNodeY] = useState<Record<string, { y: number; h: number }>>({});
+  // 連線畫布要給明確的寬高：只靠 absoluteFill 時，網頁版的 <svg> 會停在預設的 300×150，下面的線被切掉
+  const [box, setBox] = useState({ w: 0, h: 0 });
 
   const nCols = item.columns.length + 1;
   const colorOf = (leftId: string) => LINE_COLORS[item.left.findIndex((l) => l.id === leftId) % LINE_COLORS.length];
@@ -261,7 +263,8 @@ function LinkingLines({ item, answer, onChange, review, result }: QProps<Linking
       if (!oid) return;
       const r = rectOf(ci + 1, oid);
       const ok = review ? item.answer[l.id][ci] === oid : true;
-      pushLine(prev, r, review ? (ok ? colors.success : colors.danger) : color);
+      // 對的線保留各列自己的顏色（多列連到同一個答案時才分得出來），錯的線用紅色虛線
+      pushLine(prev, r, ok ? color : colors.danger, !ok);
       prev = r;
     });
   }
@@ -295,7 +298,12 @@ function LinkingLines({ item, answer, onChange, review, result }: QProps<Linking
           </View>
         ))}
       </View>
-      <View style={{ position: 'relative' }}>
+      <View
+        style={{ position: 'relative' }}
+        onLayout={(e) => {
+          const { width, height } = e.nativeEvent.layout;
+          setBox((b) => (b.w === width && b.h === height ? b : { w: width, h: height }));
+        }}>
         <View style={{ flexDirection: 'row', gap: space.xl }}>
           <View style={{ flex: 1, gap: space.sm }} onLayout={onColLayout(0)}>
             {item.left.map((l) => {
@@ -352,9 +360,19 @@ function LinkingLines({ item, answer, onChange, review, result }: QProps<Linking
             </View>
           ))}
         </View>
-        <Svg pointerEvents="none" style={StyleSheet.absoluteFill}>
+        <Svg pointerEvents="none" width={box.w} height={box.h} style={StyleSheet.absoluteFill}>
           {lines.map((ln, i) => (
-            <Line key={i} x1={ln.x1} y1={ln.y1} x2={ln.x2} y2={ln.y2} stroke={ln.color} strokeWidth={2.5} strokeLinecap="round" />
+            <Line
+              key={i}
+              x1={ln.x1}
+              y1={ln.y1}
+              x2={ln.x2}
+              y2={ln.y2}
+              stroke={ln.color}
+              strokeWidth={2.5}
+              strokeLinecap="round"
+              strokeDasharray={ln.dashed ? '6 5' : undefined}
+            />
           ))}
           {lines.map((ln, i) => (
             <Circle key={`c${i}`} cx={ln.x2} cy={ln.y2} r={4} fill={ln.color} />
