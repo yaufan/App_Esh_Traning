@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { groups, selfGroups, topicsOf } from './bank';
+import { getItem, groups, selfGroups, topicsOf } from './bank';
 import { dayKey, isDue, startOfDay, useAppStore, type Session } from './store';
 import type { ItemType } from './types';
 
@@ -19,7 +19,9 @@ export function useOverview() {
   const wrong = useAppStore((s) => s.wrong);
   let seen = 0;
   let correctLast = 0;
-  for (const st of Object.values(itemStats)) {
+  // 題庫改版時被移除的題目，手機裡可能還留著舊紀錄：只統計題庫裡還有的題
+  for (const [id, st] of Object.entries(itemStats)) {
+    if (!getItem(id)) continue;
     seen++;
     if (st.last) correctLast++;
   }
@@ -35,7 +37,7 @@ export function useOverview() {
     seen,
     totalItems,
     accuracy: seen ? correctLast / seen : 0,
-    wrongCount: Object.keys(wrong).length,
+    wrongCount: Object.keys(wrong).filter((id) => getItem(id)).length,
     byCat,
   };
 }
@@ -130,7 +132,7 @@ export function useToday() {
   const now = useNow();
   const today = startOfDay(now);
   const done = daily[dayKey(now)]?.n ?? 0;
-  const dueIds = Object.keys(wrong).filter((id) => isDue(srs, id, now));
+  const dueIds = Object.keys(wrong).filter((id) => getItem(id) && isDue(srs, id, now));
 
   let streak = 0;
   for (let i = done > 0 ? 0 : 1; i < 400; i++) {

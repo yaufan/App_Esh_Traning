@@ -88,7 +88,8 @@ export default function SessionScreen() {
     );
   }
 
-  const group = groupsInSession[s.index];
+  // 題庫改版後題組可能變少：位置超出範圍時停在最後一組
+  const group = groupsInSession[Math.min(s.index, groupsInSession.length - 1)];
   const items = group ? itemsOf(group) : [];
   const allItems = groupsInSession.flatMap((g) => itemsOf(g));
   const unanswered = allItems.filter((it) => !isAnswered(it, s.answers[it.id])).length;
