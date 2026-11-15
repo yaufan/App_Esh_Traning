@@ -1,0 +1,98 @@
+[
+ {
+  "id": "O-106-2-07",
+  "field": "title",
+  "change": "題組標題「易燃液體蒸氣場所之防爆措施」→「易燃液體蒸氣滯留場所之措施與電氣設備」（原標題的「防爆」洩漏子題 O-106-2-07-2 的答案）",
+  "source": "複審 fix"
+ },
+ {
+  "id": "O-106-3-03",
+  "field": "topic",
+  "change": "topic「…｜立即危險退避」→「…｜立即發生危險之虞」（原 topic 的「退避」洩漏子題 O-106-3-03-1、O-106-3-03-2 的答案）",
+  "source": "複審 fix"
+ },
+ {
+  "id": "O-106-3-03-3",
+  "field": "explanation",
+  "change": "explanation「常考數值：」→「條文中的數值：」，其餘不動",
+  "source": "複審 fix"
+ },
+ {
+  "id": "O-106-3-05-1",
+  "field": "explanation",
+  "change": "explanation「常考數值：」→「條文中的數值：」，其餘不動",
+  "source": "複審 fix"
+ },
+ {
+  "id": "O-106-1-05",
+  "field": "（整個題組）",
+  "change": "刪除整個題組（106-1 第 5 題，預防靜電災害 5 種方法；子題 O-106-1-05-1），並在 old/excluded_106.json 追加一筆。理由：依據庫中針對題目情境的方法只有 4 種（設施規則第 175 條），第 5 種原引用的營造標準第 106 條適用於壓氣施工法之高壓室內作業，情境不同。",
+  "source": "追加修正 1"
+ },
+ {
+  "id": "O-106-2-02-1",
+  "field": "modelAnswer[0]",
+  "change": "modelAnswer 第一行「條文共列 9 項（…），任答 5 項：」→「職業安全衛生設施規則第 324-3 條第 1 項共列 9 項具體事項（…），任答 5 項：」；括號內容與第 1～9 點不動（已核對該條第 1 項共 10 款，第 10 款為概括款）",
+  "source": "追加修正 2"
+ },
+ {
+  "id": "O-106-3-04-3",
+  "field": "lawChangeNote",
+  "change": "lawChangeNote「現行第 12-2 條改為…」→「現行第 12-2 條規定為…」（不暗示沿革）",
+  "source": "追加修正 3"
+ },
+ {
+  "id": "O-106-1-01-1",
+  "field": "explanation",
+  "change": "explanation 刪除「，是本小題的得分重點」與末句「作答時三種身分（勞工、自營作業者、其他受指揮監督者）都要寫到。」，其餘不動",
+  "source": "追加修正 4"
+ },
+ {
+  "id": "O-106-2-07-1",
+  "field": "explanation",
+  "change": "explanation 刪除末句「本小題得分關鍵是「通風、換氣」。」",
+  "source": "追加修正 4"
+ },
+ {
+  "id": "O-106-1-09",
+  "field": "originalText",
+  "change": "originalText「過氧化丁酗」→「過氧化丁酮」（依職業安全衛生設施規則第 11 條第 3 款用語；子題空格標示原本就是「丁酮」）",
+  "source": "辨識錯字"
+ },
+ {
+  "id": "O-106-1-09-1",
+  "field": "explanation",
+  "change": "explanation 刪除括號說明「（原試題 PDF 字形印為「過氧化丁酗」，依條文應為「過氧化丁酮」）」（originalText 已更正，說明不再需要）",
+  "source": "辨識錯字"
+ },
+ {
+  "id": "O-106-1-08",
+  "field": "originalText",
+  "change": "originalText「場所人口顯而易見處」→「場所入口顯而易見處」（依缺氧症預防規則第 18 條第 1 項用語；子題 stem 原本就是「入口」）",
+  "source": "辨識錯字"
+ },
+ {
+  "id": "O-106-1-08-1",
+  "field": "explanation",
+  "change": "explanation 刪除括號說明「（原試題 PDF 此處字形印為「人口」，依條文應為「入口」。）」（originalText 已更正，說明不再需要）",
+  "source": "辨識錯字"
+ },
+ {
+  "id": "O-106-2-01-1",
+  "field": "stem",
+  "change": "stem 句尾補回官方原文的句號「(6 分)」→「(6 分)。」（與 originalText 一致）",
+  "source": "追加修正 5"
+ },
+ {
+  "id": "O-106-1-02-2",
+  "field": "explanation",
+  "change": "explanation 刪除「，是本小題核心」（與「得分重點」同類的作答說法），條文內容敘述不動",
+  "source": "追加修正 6"
+ },
+ {
+  "id": "O-106-1-01-2",
+  "field": "explanation",
+  "change": "explanation「作答要點有三：」→「定義包含三部分：」（改成中性敘述，後面列的三部分內容不動）",
+  "source": "追加修正 6"
+ }
+]

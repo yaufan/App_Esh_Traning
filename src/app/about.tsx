@@ -105,7 +105,7 @@ export default function About() {
       <Card tone="accent" style={{ gap: space.sm }}>
         <AppText variant="smallStrong">重要說明</AppText>
         <AppText variant="small" color={colors.inkSoft}>
-          官方術科電腦化試題保密不公開，本 APP 的電腦化題組全部是依法規自行編寫的練習題，並非官方試題。105–109 年舊題照錄官方試卷題目，參考答案由本 APP 依現行法規重新撰寫，與官方或任何補習班的解答無關。本 APP 僅供練習，實際法令解釋以主管機關公告為準。
+          官方術科電腦化試題保密不公開，本 APP 的電腦化題組全部是依法規自行編寫的練習題，並非官方試題。105–109 年舊題照錄官方試卷題目（少數明顯錯字已更正），參考答案由本 APP 依現行法規重新撰寫，與官方或任何補習班的解答無關。本 APP 僅供練習，實際法令解釋以主管機關公告為準。
         </AppText>
       </Card>
 

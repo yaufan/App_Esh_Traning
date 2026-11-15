@@ -1,0 +1,38 @@
+[
+ {
+  "id": "S-D-08-1",
+  "field": "options/answer/explanation",
+  "change": "選項 B、I 合併為「專人（條文未規定須為作業主管）」，空格 8 的答案由 I 改為 B",
+  "source": "盲解疑慮"
+ },
+ {
+  "id": "S-B-03-2",
+  "field": "stem",
+  "change": "補充限定：未註明設有總機構的選項指第 2 條之 1 的規定",
+  "source": "盲解疑慮"
+ },
+ {
+  "id": "S-F-04-3",
+  "field": "stem",
+  "change": "明寫「以情境所給之 840 立方公尺計算」，用語改為條文的「每一勞工所佔立方公尺數」",
+  "source": "盲解疑慮"
+ },
+ {
+  "id": "S-F-04-4",
+  "field": "stem/explanation",
+  "change": "同上，明寫計算基礎",
+  "source": "盲解疑慮"
+ },
+ {
+  "id": "S-F-06-3",
+  "field": "stem",
+  "change": "刪去「至少」，改為依條文比率（一比五分之一）計算",
+  "source": "盲解疑慮"
+ },
+ {
+  "id": "S-C-03-1",
+  "field": "explanation",
+  "change": "刪除口訣句",
+  "source": "經驗說法清查"
+ }
+]

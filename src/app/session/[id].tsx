@@ -89,14 +89,15 @@ export default function SessionScreen() {
   }
 
   // 題庫改版後題組可能變少：位置超出範圍時停在最後一組
-  const group = groupsInSession[Math.min(s.index, groupsInSession.length - 1)];
+  const idx = Math.max(0, Math.min(s.index, groupsInSession.length - 1));
+  const group = groupsInSession[idx];
   const items = group ? itemsOf(group) : [];
   const allItems = groupsInSession.flatMap((g) => itemsOf(g));
   const unanswered = allItems.filter((it) => !isAnswered(it, s.answers[it.id])).length;
   const locked = !!s.submittedAt;
   const practice = s.mode !== 'mock';
   const study = s.mode === 'study';
-  const last = s.index >= groupsInSession.length - 1;
+  const last = idx >= groupsInSession.length - 1;
   const lowTime = left != null && left <= 300;
 
   const go = (i: number) => {
@@ -146,7 +147,7 @@ export default function SessionScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.nav}>
           {groupsInSession.map((g, i) => {
             const st = groupState(g);
-            const cur = i === s.index;
+            const cur = i === idx;
             return (
               <Pressable
                 key={g.id}
@@ -177,7 +178,7 @@ export default function SessionScreen() {
               <View style={{ gap: space.sm }}>
                 <View style={{ flexDirection: 'row', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>
                   <AppText variant="caption" color={colors.inkSoft} mono>
-                    題組 {s.index + 1}/{groupsInSession.length}
+                    題組 {idx + 1}/{groupsInSession.length}
                   </AppText>
                   <Tag
                     label={group.source === 'official-old' ? `${group.session} 第 ${group.no} 題` : categoryMeta[group.category].short}
@@ -291,11 +292,11 @@ export default function SessionScreen() {
       {/* 底部操作列 */}
       <View style={[styles.footer, { backgroundColor: colors.surface, borderTopColor: colors.line, paddingBottom: Math.max(insets.bottom, space.md) }]}>
         <View style={styles.footerInner}>
-          <Button title="上一組" variant="outline" icon="chevron-back" compact disabled={s.index === 0} onPress={() => go(s.index - 1)} />
+          <Button title="上一組" variant="outline" icon="chevron-back" compact disabled={idx === 0} onPress={() => go(idx - 1)} />
           <View style={{ flex: 1, alignItems: 'center' }}>
             {!locked && (
               <AppText variant="caption" color={colors.inkMute}>
-                {study ? `題組 ${s.index + 1}/${groupsInSession.length}` : `未作答 ${unanswered} 題`}
+                {study ? `題組 ${idx + 1}/${groupsInSession.length}` : `未作答 ${unanswered} 題`}
               </AppText>
             )}
           </View>
@@ -308,7 +309,7 @@ export default function SessionScreen() {
               <Button title={isMock ? '交卷' : '完成'} variant="accent" icon="checkmark-done" compact onPress={() => (isMock ? setConfirm('submit') : finish())} />
             )
           ) : (
-            <Button title="下一組" variant="primary" icon="chevron-forward" iconRight compact onPress={() => go(s.index + 1)} />
+            <Button title="下一組" variant="primary" icon="chevron-forward" iconRight compact onPress={() => go(idx + 1)} />
           )}
         </View>
       </View>

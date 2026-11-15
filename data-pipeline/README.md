@@ -13,6 +13,8 @@
 | `old/excluded_10x.json` | 不收錄的官方題目與理由 |
 | `reviews/review_*.json` | 獨立審題紀錄，每個子題一筆：verdict（pass／fix／fail）、問題、修正與處理結果 |
 | `reviews/recheck_*.json` | 修正後的題目由另一位審題者複審的紀錄 |
+| `reviews/audit_20261115/` | 2026-11-15 全面查核：盲解答案、問答題複審、修正紀錄、交叉複審紀錄與摘要 |
+| `old/text_corrections.json` | 官方題目原文中更正的明顯錯字 |
 | `SCHEMA.md` | 題庫格式與出題鐵則 |
 | `EXTRA_RULES.md` | 審題後確立的補充規則（排序題、概括條款、洩題、重複、限定詞等） |
 | `AGENT_BRIEF.md`／`OLD_BRIEF.md`／`REVIEW_BRIEF.md` | 出題、舊題解答、審題的作業規範 |

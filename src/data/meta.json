@@ -1,12 +1,12 @@
 {
- "bankVersion": "2026.11.14",
+ "bankVersion": "2026.11.15",
  "lawsRetrievedAt": "2026-11-07",
  "lawSource": "全國法規資料庫（經官方網站逐條比對）",
- "verifiedAt": "2026-11-14",
+ "verifiedAt": "2026-11-15",
  "counts": {
-  "groups": 192,
-  "items": 533,
+  "groups": 188,
+  "items": 529,
   "self": 82,
-  "official": 110
+  "official": 106
  }
 }

@@ -1,0 +1,6 @@
+[
+ {"group": "O-105-2-06", "field": "originalText", "from": "職業安全衛牛設施規則", "to": "職業安全衛生設施規則", "basis": "法規名稱"},
+ {"group": "O-105-2-06", "field": "originalText", "from": "有車輛出人", "to": "有車輛出入", "basis": "職業安全衛生設施規則第 21 條之 1 用語"},
+ {"group": "O-106-1-08", "field": "originalText", "from": "場所人口顯而易見處", "to": "場所入口顯而易見處", "basis": "缺氧症預防規則第 18 條第 1 項用語"},
+ {"group": "O-106-1-09", "field": "originalText", "from": "過氧化丁酗", "to": "過氧化丁酮", "basis": "職業安全衛生設施規則第 11 條第 3 款用語"}
+]
