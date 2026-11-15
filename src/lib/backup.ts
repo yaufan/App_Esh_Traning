@@ -180,6 +180,8 @@ export function parseBackup(text: string): ParsedBackup {
     if (isNum(s.fontScale) && s.fontScale >= 1 && s.fontScale <= 1.5) settings.fontScale = s.fontScale;
     if (typeof s.examDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s.examDate)) settings.examDate = s.examDate;
     if (isNum(s.dailyGoal) && s.dailyGoal >= 1 && s.dailyGoal <= 500) settings.dailyGoal = Math.round(s.dailyGoal);
+    if (typeof s.reminderOn === 'boolean') settings.reminderOn = s.reminderOn;
+    if (typeof s.reminderTime === 'string' && /^\d{2}:\d{2}$/.test(s.reminderTime)) settings.reminderTime = s.reminderTime;
   }
 
   const sessions: BackupData['sessions'] = {};

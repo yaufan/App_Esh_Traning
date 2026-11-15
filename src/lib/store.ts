@@ -41,6 +41,10 @@ type Settings = {
   examDate?: string;
   /** 每日目標（子題數） */
   dailyGoal?: number;
+  /** 每日複習提醒（手機本機通知） */
+  reminderOn?: boolean;
+  /** 提醒時間 HH:MM */
+  reminderTime?: string;
 };
 
 /** 間隔複習：答錯後依序隔 1、3、7、14 天複習，每次到期答對就進下一階，全部答對才移出錯題本 */

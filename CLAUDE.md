@@ -18,7 +18,7 @@
 - 出題還要遵守 `data-pipeline/EXTRA_RULES.md`（審題後確立的補充規則）。同一題組的子題會顯示在同一頁，所以子題之間不可互相洩題；新題要和既有題庫、同批其他新題比對，同條文同考點的擇一保留。依審題意見修改過的題目要再交給另一位審題者複審。
 - 全面查核的做法（2026-11-15 做過一次，紀錄與作業說明在 `data-pipeline/reviews/audit_20261115/`）：客觀題去掉答案後交給沒看過答案的查核者依條文盲解、程式比對；問答題由新審題者複審；修改後再交叉複審。盲解時題目與依據庫要放在獨立資料夾，暫存資料夾裡不可留有含答案的檔案。
 - 解析與註記不寫依據庫查不到的東西：法規修正註記（`lawChangeNote`）的日期只能用依據庫 `laws.json` 的 modified／effectiveNote；不寫「常考」「口訣」「得分重點」「注意不要混淆」這類提示式用語；引號裡的條文用語要和條文逐字相同。
-- APP 不連網、沒有帳號、沒有廣告，作答紀錄只存在手機（AsyncStorage）。備份是匯出檔案交給手機的分享功能，回報題目是開分享或瀏覽器，APP 本身都不連網；不要加會帶入網路、定位、廣告權限的套件（release.yml 會擋）。
+- APP 不連網、沒有帳號、沒有廣告，作答紀錄只存在手機（AsyncStorage）。每日複習提醒（`src/lib/reminder.ts`）是手機本機排程通知（expo-notifications），每次開 APP、作答、改設定時重排接下來 7 天；套件附帶的推播權限（網路狀態、c2dm、AD_ID）在 `plugins/withAndroidRelease.js` 拿掉。備份是匯出檔案交給手機的分享功能，回報題目是開分享或瀏覽器，APP 本身都不連網；不要加會帶入網路、定位、廣告權限的套件（release.yml 會擋）。
 - 「直接看答案」（session 的 `study` 模式）：題庫頁的開關 `settings.studyMode`；作答區用 `answerKey()` 填入正解，不計分、不寫入 `itemStats`／錯題本。新增題型時要同步補 `answerKey()`。
 - 作答結果一律經 `store.ts` 的 `applyResult()` 記錄（答對率、錯題本、間隔複習 `srs`、每日紀錄 `daily`）。間隔複習：答錯隔 1、3、7、14 天複習，到期答對才進下一階。新增要保存的狀態時，`backup.ts` 的匯出與 `parseBackup()` 檢查都要一起補。
 - 文字大小：用 `AppText` 或 `useType()`，不要直接用 tokens 的 `type`，否則「字體大小」設定不會生效。元件裡不要直接呼叫 `Date.now()`（lint 會擋），用 `useNow()`。

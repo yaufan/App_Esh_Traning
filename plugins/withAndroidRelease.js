@@ -5,7 +5,7 @@
  *    和 yaufan 其他 APP 用同一把測試金鑰（別名 kidspaint、pkcs12），
  *    密碼放在 ESH_TRAINING_KEYSTORE_PASSWORD。沒有環境變數時沿用 debug 金鑰，方便本機試打包。
  * 2. 分機型打包：arm64（一般手機）、armv7（很舊的手機）、x86_64（模擬器、Chromebook）三個 APK。
- * 3. 正式版拿掉用不到的權限：本 APP 不連網、不讀寫檔案、不顯示在其他 APP 上方。
+ * 3. 正式版拿掉用不到的權限：本 APP 不連網、不讀寫檔案、不顯示在其他 APP 上方、不收推播（每日提醒是本機通知）。
  *    只拿掉 release，debug 版仍保留網路權限，才能連開發伺服器。
  *
  * 找不到要改的位置時直接報錯，避免默默打包出沒簽章或沒分機型的 APK。
@@ -20,6 +20,10 @@ const REMOVED_IN_RELEASE = [
   'android.permission.SYSTEM_ALERT_WINDOW',
   'android.permission.READ_EXTERNAL_STORAGE',
   'android.permission.WRITE_EXTERNAL_STORAGE',
+  // 每日複習提醒只用本機通知；通知套件附帶的推播（Firebase）相關權限一律拿掉
+  'android.permission.ACCESS_NETWORK_STATE',
+  'com.google.android.c2dm.permission.RECEIVE',
+  'com.google.android.gms.permission.AD_ID',
 ];
 
 function replaceOnce(src, find, replacement, what) {

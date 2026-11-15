@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText, Button, Card, Divider, IconButton, Screen, SectionTitle } from '@/components/ui/primitives';
+import { ReminderSetting } from '@/components/ui/reminder-setting';
 import { Sheet } from '@/components/ui/sheet';
 import { exportBackup, parseBackup, pickBackupText, type ParsedBackup } from '@/lib/backup';
 import { laws, meta } from '@/lib/bank';
@@ -171,6 +172,8 @@ export default function About() {
           </AppText>
           <Ionicons name={settings.haptics ? 'toggle' : 'toggle-outline'} size={36} color={settings.haptics ? colors.success : colors.inkMute} />
         </Pressable>
+        <Divider />
+        <ReminderSetting />
         <Divider />
         <Button title="清除所有作答紀錄" variant="danger" icon="trash-outline" compact onPress={() => setConfirm(true)} />
       </Card>

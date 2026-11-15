@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { useReminderSync } from '@/lib/reminder';
 import { useAppStore } from '@/lib/store';
 import { AppThemeProvider, useTheme } from '@/theme';
 
@@ -15,6 +16,7 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 
 function Shell() {
   const { colors, dark } = useTheme();
+  useReminderSync('職安乙級術科練習');
   return (
     <>
       <StatusBar style={dark ? 'light' : 'dark'} />
