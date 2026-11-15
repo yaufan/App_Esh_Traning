@@ -15,7 +15,7 @@ PENDING = {
  'N0060039': ['3','19','29'],
 }
 # article text fine but an attached table (附表) is pending -> do not ask about attached table values
-TABLE_PENDING = {'N0060004':['2'], 'N0060010':['3','4','5'], 'N0060054':['5','12']}
+TABLE_PENDING = {'N0060004':['2'], 'N0060010':['3','4','5'], 'N0060022':['2','16'], 'N0060054':['5','12']}
 SKIP = {'N0060041'}
 def label(n):
     a,b = divmod(n,100); return f"{a}" if b==0 else f"{a}-{b}"
